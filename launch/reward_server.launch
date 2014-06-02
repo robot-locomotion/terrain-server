@@ -1,0 +1,8 @@
+<launch>
+	
+	<node pkg="reward_map_server" type="reward_map_server" name="terrain_reward_map_server">
+		<remap from="reward_map" to="/my_reward_map" />
+		<remap from="world" to="world" />
+	</node>
+	
+</launch>
