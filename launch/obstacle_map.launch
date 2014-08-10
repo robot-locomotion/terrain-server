@@ -1,0 +1,10 @@
+<launch>
+	
+	<node pkg="terrain_server" type="obstacle_map_server" name="terrain_obstacle_map_server">
+		<remap from="obstacle_map" to="/obstacle_map" />
+		<param name="world_frame" type="string" value="odom" />
+		<!-- Base frame of the robot -->
+		<param name="base_frame" type="string" value="base_link" />
+	</node>
+	
+</launch>
