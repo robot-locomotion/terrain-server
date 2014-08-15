@@ -1,0 +1,15 @@
+<launch>
+	
+	<!-- load hierarchical planner configurations from YAML file to parameter server -->
+	<rosparam file="$(find dwl_planners)/config/hierarchical_planner.yaml" command="load"/>
+	
+	<node pkg="dwl_planners" type="hierarchical_planner_node" name="hierarchical_planner" output="screen">
+		<remap from="reward_map" to="/reward_map" />
+		<remap from="obstacle_map" to="/obstacle_map" />
+		<!-- fixed map frame (set to 'map' if SLAM or localization running!) -->
+		<param name="world_frame" type="string" value="odom" />
+		<!-- Base frame of the robot -->
+		<param name="base_frame" type="string" value="base_link" />
+	</node>
+	
+</launch>
