@@ -1,0 +1,25 @@
+reward_map:
+  # Defining the search areas
+  search_areas:
+    - centre_front_1
+    - centre_front_2
+    - centre_back
+    - left_lateral
+    - right_lateral
+  centre_front_1: {min_x: -0.5, max_x: 2.5, min_y: -0.85, max_y: 0.85, min_z: -0.8, max_z: -0.35, resolution: 0.02}
+  centre_front_2: {min_x: 2.5, max_x: 3.0, min_y: -0.85, max_y: 0.85, min_z: -0.8, max_z: -0.35, resolution: 0.08}
+  centre_back: {min_x: -0.75, max_x: -0.5, min_y: -0.85, max_y: 0.85, min_z: -0.8, max_z: -0.35, resolution: 0.08}
+  left_lateral: {min_x: -0.75, max_x: 3.0, min_y: -1.25, max_y: 0.85, min_z: -0.8, max_z: -0.35, resolution: 0.08}
+  right_lateral: {min_x: -0.75, max_x: 3.0, min_y: 0.85, max_y: 1.25, min_z: -0.8, max_z: -0.35, resolution: 0.08}
+  
+  # Defining the interest region for reward map generation
+  interest_region:
+    radius_x: 1.5
+    radius_y: 5.5
+  
+  # Defining the features for the reward map generation
+  features:
+    slope: {enable: true, weight: 0}
+    height_deviation: {enable: true, weight: 1}
+    curvature: {enable: true, weight: 0}
+    
