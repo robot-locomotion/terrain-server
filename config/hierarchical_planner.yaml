@@ -9,8 +9,12 @@ hierarchical_planner:
     path_solver: AnytimeRepairingAStar
     ###### TODO: pose_solver:
     # There are several adjacency model such as LatticeBasedBodyAdjacency and GridBasedBodyAdjacency
-    # The default adjacency model is LatticeBasedBody
-    adjacency: LatticeBasedBodyAdjacency
+    # The default adjacency model is LatticeBasedBody without body features
+    adjacency:
+      name: LatticeBasedBodyAdjacency
+      features:
+        maximum_height: {enable: true, weight: 1, gain: 10}
+        nominal_body_orientation: {enable: false, weight: 1, gain: 5}
     # The maximum allowed computation time for path solver in seconds. Note that this time is used only in Anytime algorithms
     # The default computation time is 1 sec.
     path_computation_time: 5
@@ -18,6 +22,9 @@ hierarchical_planner:
     
   contact_planner:
     solver: GreedyAlgorithm ###### TODO
+    features:
+      maximum_height: {enable: false, weight: 1, gain: 50}
+      body_orientation: {enable: false, weight: 1, gain: 5}
     # The maximum allowed computation time for contact solver in seconds
     # The default computation time is 1 sec.
     computation_time: 0.5
