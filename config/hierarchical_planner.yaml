@@ -13,7 +13,7 @@ hierarchical_planner:
     adjacency:
       name: LatticeBasedBodyAdjacency
       features:
-        maximum_height: {enable: true, weight: 1, gain: 10}
+        maximum_height: {enable: true, weight: 1, gain: 5}
         nominal_body_orientation: {enable: false, weight: 1, gain: 5}
     # The maximum allowed computation time for path solver in seconds. Note that this time is used only in Anytime algorithms
     # The default computation time is 1 sec.
