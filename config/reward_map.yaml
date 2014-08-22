@@ -19,7 +19,7 @@ reward_map:
   
   # Defining the features for the reward map generation
   features:
-    slope: {enable: false, weight: 1, gain: 5}
-    height_deviation: {enable: true, weight: 1, gain: 50, neighboring_area: {square_size: 0.05, resolution: 0.04}}
-    curvature: {enable: false, weight: 1, gain: 1}
+    slope: {enable: false, weight: 5}
+    height_deviation: {enable: true, weight: 50, neighboring_area: {square_size: 0.05, resolution: 0.04}}
+    curvature: {enable: false, weight: 1}
     
