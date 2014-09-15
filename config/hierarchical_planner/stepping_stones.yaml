@@ -4,6 +4,7 @@ hierarchical_planner:
   
   # Defining the body planner
   body_planner:
+    type: SearchBasedBody
     # There are several solver such as AnytimeRepairingAStar, AStar and Dijkstrap
     # The default solver is the ARA*
     path_solver: AnytimeRepairingAStar
