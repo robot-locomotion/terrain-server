@@ -1,6 +1,6 @@
 hierarchical_planner:
   # Defining the goal state
-  goal: {x: 0, y: 0, yaw: 1.57}
+  goal: {x: 3.5, y: 0, yaw: 0}
   
   # Defining the body planner
   body_planner:
@@ -21,11 +21,13 @@ hierarchical_planner:
     ###### TODO: pose_computation_time:
     
   contact_planner:
-    solver: GreedyAlgorithm ###### TODO
+    type: GreedyFootstep
     features:
       support_triangle: {enable: true, weight: 10}
       leg_collision: {enable: true, weight: 15}
       body_orientation: {enable: false, weight: 5}
+    # The contact horizon; the zero value disable a horizon, i.e. it computes all the contact sequence
+    horizon: 0
     # The maximum allowed computation time for contact solver in seconds
     # The default computation time is 1 sec.
     computation_time: 0.5
