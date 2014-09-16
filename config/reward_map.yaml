@@ -6,11 +6,11 @@ reward_map:
     - centre_back
     - left_lateral
     - right_lateral
-  centre_front_1: {min_x: -0.5, max_x: 3.0, min_y: -0.85, max_y: 0.85, min_z: -0.8, max_z: -0.25, resolution: 0.04}
-  centre_front_2: {min_x: 3.0, max_x: 3.5, min_y: -0.85, max_y: 0.85, min_z: -0.8, max_z: -0.25, resolution: 0.08}
-  centre_back: {min_x: -0.75, max_x: -0.5, min_y: -0.85, max_y: 0.85, min_z: -0.8, max_z: -0.25, resolution: 0.08}
-  left_lateral: {min_x: -0.75, max_x: 3.5, min_y: -1.25, max_y: 0.85, min_z: -0.8, max_z: -0.25, resolution: 0.08}
-  right_lateral: {min_x: -0.75, max_x: 3.5, min_y: 0.85, max_y: 1.25, min_z: -0.8, max_z: -0.25, resolution: 0.08}
+  centre_front_1: {min_x: -0.5, max_x: 3.0, min_y: -0.85, max_y: 0.85, min_z: -1.2, max_z: -0.25, resolution: 0.04}
+  centre_front_2: {min_x: 3.0, max_x: 3.5, min_y: -0.85, max_y: 0.85, min_z: -1.2, max_z: -0.25, resolution: 0.08}
+  centre_back: {min_x: -0.75, max_x: -0.5, min_y: -0.85, max_y: 0.85, min_z: -1.2, max_z: -0.25, resolution: 0.08}
+  left_lateral: {min_x: -0.75, max_x: 3.5, min_y: -1.25, max_y: 0.85, min_z: -1.2, max_z: -0.25, resolution: 0.08}
+  right_lateral: {min_x: -0.75, max_x: 3.5, min_y: 0.85, max_y: 1.25, min_z: -1.2, max_z: -0.25, resolution: 0.08}
   
   # Defining the interest region for reward map generation
   interest_region:
