@@ -25,7 +25,7 @@ hierarchical_planner:
     type: GreedyFootstep
     features:
       support_triangle: {enable: true, weight: 10}
-      leg_collision: {enable: true, weight: 15}
+      leg_collision: {enable: true, weight: 50}
       body_orientation: {enable: false, weight: 5}
     # The contact horizon; the zero value disable a horizon, i.e. it computes all the contact sequence
     horizon: 0
