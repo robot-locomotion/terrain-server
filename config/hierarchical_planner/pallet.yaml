@@ -1,6 +1,6 @@
 hierarchical_planner:
   # Defining the goal state
-  goal: {x: 3.5, y: 0, yaw: 0}
+  goal: {x: 1.6, y: 0, yaw: 0}
   
   # Defining the body planner
   body_planner:
@@ -18,15 +18,15 @@ hierarchical_planner:
         potential_body_orientation: {enable: false, weight: 50}
     # The maximum allowed computation time for path solver in seconds. Note that this time is used only in Anytime algorithms
     # The default computation time is 1 sec.
-    path_computation_time: 5
+    path_computation_time: 15
     ###### TODO: pose_computation_time:
     
   contact_planner:
     type: GreedyFootstep
     features:
-      support_triangle: {enable: true, weight: 10}
-      leg_collision: {enable: true, weight: 50}
-      body_orientation: {enable: true, weight: 5}
+      support_triangle: {enable: false, weight: 100}
+      leg_collision: {enable: true, weight: 5000}
+      body_orientation: {enable: false, weight: 5}
     # The contact horizon; the zero value disable a horizon, i.e. it computes all the contact sequence
     horizon: 0
     # The maximum allowed computation time for contact solver in seconds
