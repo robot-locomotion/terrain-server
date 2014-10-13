@@ -2,6 +2,19 @@ hierarchical_planner:
   # Defining the goal state
   goal: {x: 1.6, y: 0, yaw: 0}
   
+  # Defining the robot properties
+  robot:
+    body_movement_primitives: /home/cmastalli/ros_workspace/src/dwl_planners/config/hyq/body_motor_primitives.yaml
+    nominal_stance:
+      LF: {x: 0.36, y: 0.32}
+      RF: {x: 0.36, y: -0.32}
+      LH: {x: -0.36, y: 0.32}
+      RH: {x: -0.36, y: -0.32}
+    footstep_area: {x: 0.125, y: 0.125} #stance_size
+    body_area: {x: 0, y: 0} #TODO
+    leg_area: {x: 0, y: 0} #TODO
+    
+  
   # Defining the body planner
   body_planner:
     type: SearchBasedBody

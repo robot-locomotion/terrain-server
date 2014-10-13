@@ -1,0 +1,14 @@
+hyq:
+  end_effectors: [LF_foot, RF_foot, LH_foot, RH_foot]
+  nominal_stance:
+    LF_foot: {x: 0.36, y: 0.32}
+    RF_foot: {x: 0.36, y: -0.32}
+    LH_foot: {x: -0.36, y: 0.32}
+    RH_foot: {x: -0.36, y: -0.32}
+    
+    
+  footstep_search_window:
+    min_x: -0.125
+    min_y: -0.125
+    max_x: 0.125
+    max_y: 0.125
