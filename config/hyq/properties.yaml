@@ -1,14 +1,65 @@
 hyq:
-  end_effectors: [LF_foot, RF_foot, LH_foot, RH_foot]
-  nominal_stance:
-    LF_foot: {x: 0.36, y: 0.32}
-    RF_foot: {x: 0.36, y: -0.32}
-    LH_foot: {x: -0.36, y: 0.32}
-    RH_foot: {x: -0.36, y: -0.32}
-    
-    
-  footstep_search_window:
-    min_x: -0.125
-    min_y: -0.125
-    max_x: 0.125
-    max_y: 0.125
+  description:
+    end_effectors: [LF_foot, RF_foot, LH_foot, RH_foot, patch_1, patch_2]
+    feet: [LF_foot, RF_foot, LH_foot, RH_foot]    
+    # End-effector definition for computation of Jacobians
+    end_effector_descriptions: 
+      patch_1: [p11, p12, p13]
+      patch_2: [p21, p22, p23, p24]
+  
+  predefined_properties:
+    # The predefined pattern of locomotion for walking [#TODO The Robot class should more general in the future]
+    pattern_locomotion:
+      LF_foot: RH_foot
+      RF_foot: LH_foot
+      LH_foot: LF_foot
+      RH_foot: RF_foot
+    # The stance of the robot is defined using the nominal stance, leg lateral offset and
+    # the displacement on forward/backward movements
+    nominal_stance:
+      LF_foot: [0.36, 0.32, -0.55]
+      RF_foot: [0.36, -0.32, -0.55]
+      LH_foot: [-0.36, 0.32, -0.55]
+      RH_foot: [-0.36, -0.32, -0.55]
+      lateral_offset: 0.03
+      displacement: 0.04
+    # The footstep search window
+    footstep_search_window:
+      min_x: -0.15
+      max_x: 0.20
+      min_y: -0.15
+      max_y: 0.075
+      resolution: 0.04
+    # The predefined leg workspace
+    leg_workspace: #TODO test it!
+      LF_foot:
+        min_x: -0.275
+        max_x: 0.18
+        min_y: -0.125
+        max_y: 0.125
+        resolution: 0.04
+      RF_foot:
+        min_x: -0.275
+        max_x: 0.18
+        min_y: -0.125
+        max_y: 0.125
+        resolution: 0.04
+      LH_foot:
+        min_x: 0.04
+        max_x: 0.275
+        min_y: -0.125
+        max_y: 0.125
+        resolution: 0.04
+      RH_foot:
+        min_x: 0.04
+        max_x: 0.275
+        min_y: -0.125
+        max_y: 0.125
+        resolution: 0.04
+    # The predefined body workspace
+    body_workspace:
+      min_x: -0.50
+      max_x: 0.50
+      min_y: 0.45
+      max_y: 0.45
+      resolution: 0.08

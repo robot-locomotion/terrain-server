@@ -2,6 +2,11 @@ hierarchical_planner:
   # Defining the goal state
   goal: {x: 3.5, y: 0, yaw: 0}
   
+  # Defining the robot properties
+  robot:
+    properties: /home/cmastalli/ros_workspace/src/dwl_planners/config/hyq/properties.yaml
+    body_movement_primitives: /home/cmastalli/ros_workspace/src/dwl_planners/config/hyq/body_motor_primitives.yaml
+  
   # Defining the body planner
   body_planner:
     type: SearchBasedBody
