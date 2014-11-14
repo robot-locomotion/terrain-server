@@ -1,9 +1,13 @@
 <launch>
+
+	<!-- Machine -->
+	<machine name="localhost" address="localhost" env-loader="/opt/ros/hydro/env.sh"/>
+	<arg name="machine" default="localhost" />
 	
 	<!-- load obstacle map configurations from YAML file to parameter server -->
 	<rosparam file="$(find terrain_server)/config/obstacle_map.yaml" command="load"/>
 	
-	<node pkg="terrain_server" type="obstacle_map_server" name="terrain_obstacle_map_server" output="screen">
+	<node pkg="terrain_server" type="obstacle_map_server" name="terrain_obstacle_map" output="screen" machine="$(arg machine)">
 		<remap from="obstacle_map" to="/obstacle_map" />
 		<param name="world_frame" type="string" value="odom" />
 		<!-- Base frame of the robot -->
