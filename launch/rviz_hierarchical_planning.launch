@@ -1,9 +1,13 @@
 <launch>
 	
+	<!-- Machine -->
+	<machine name="localhost" address="localhost" env-loader="/opt/ros/hydro/env.sh"/>
+	<arg name="machine" default="localhost" />
+	
 	<!-- Configuration of rviz -->
 	<arg name="configuration" default="$(find dwl_planners)/rviz/hierarchical_planner.rviz"/>
 
 	<!-- run rviz -->
-	<node name="rviz" pkg="rviz" type="rviz" args="-d $(arg configuration) -f odom"/>
+	<node name="rviz" pkg="rviz" type="rviz" args="-d $(arg configuration) -f odom" machine="localhost"/>
 	
 </launch>
