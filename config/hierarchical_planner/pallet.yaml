@@ -1,6 +1,6 @@
 hierarchical_planner:
   # Defining the goal state
-  goal: {x: 1.6, y: 0, yaw: 0}
+  goal: {x: 2.0, y: 0.0, yaw: 0.0}
   
   # Defining the robot properties
   robot:
@@ -23,7 +23,7 @@ hierarchical_planner:
         potential_body_orientation: {enable: false, weight: 50}
     # The maximum allowed computation time for path solver in seconds. Note that this time is used only in Anytime algorithms
     # The default computation time is 1 sec.
-    path_computation_time: 15
+    path_computation_time: 5
     ###### TODO: pose_computation_time:
     
   contact_planner:
