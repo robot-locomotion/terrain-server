@@ -1,11 +1,16 @@
 <launch>
 
-	<arg name="parameters" default="default"/>
+	<!-- Machine -->
+	<machine name="localhost" address="localhost" env-loader="/opt/ros/hydro/env.sh"/>
+	<arg name="machine" default="localhost" />
+  
+	<arg name="parameters" default="hierarchical_planner"/>
 	
 	<!-- load hierarchical planner configurations from YAML file to parameter server -->
-	<rosparam file="$(find dwl_planners)/config/$(arg parameters).yaml" command="load" />
-	
-	<node pkg="dwl_planners" type="hierarchical_planner_node" name="hierarchical_planner" output="screen" launch-prefix="xterm -e gdb --args">
+	<rosparam file="$(find dwl_planners)/config/$(arg parameters).yaml" command="load"/>	
+
+	<node pkg="dwl_planners" type="hierarchical_planner_node" name="hierarchical_planner" output="screen" machine="$(arg machine)"
+	launch-prefix="xterm -e gdb --args">
 		<remap from="reward_map" to="/reward_map" />
 		<remap from="obstacle_map" to="/obstacle_map" />
 		<!-- fixed map frame (set to 'map' if SLAM or localization running!) -->
