@@ -25,11 +25,30 @@ hyq:
       displacement: 0.04
     # The footstep search window
     footstep_search_window:
-      min_x: -0.15
-      max_x: 0.20
-      min_y: -0.15
-      max_y: 0.075
-      resolution: 0.04
+      LF_foot:
+        min_x: -0.15
+        max_x: 0.20
+        min_y: -0.075
+        max_y: 0.15
+        resolution: 0.04
+      RF_foot:
+        min_x: -0.15
+        max_x: 0.20
+        min_y: -0.15
+        max_y: 0.075
+        resolution: 0.04
+      LH_foot:
+        min_x: -0.15
+        max_x: 0.20
+        min_y: -0.075
+        max_y: 0.15
+        resolution: 0.04
+      RH_foot:
+        min_x: -0.15
+        max_x: 0.20
+        min_y: -0.15
+        max_y: 0.075
+        resolution: 0.04
     # The predefined leg workspace
     leg_workspace: #TODO test it!
       LF_foot:
