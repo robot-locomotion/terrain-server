@@ -17,34 +17,34 @@ hyq:
     # The stance of the robot is defined using the nominal stance, leg lateral offset and
     # the displacement on forward/backward movements
     nominal_stance:
-      LF_foot: [0.36, 0.32, -0.55]
-      RF_foot: [0.36, -0.32, -0.55]
-      LH_foot: [-0.36, 0.32, -0.55]
-      RH_foot: [-0.36, -0.32, -0.55]
+      LF_foot: [0.36, 0.3, -0.55]
+      RF_foot: [0.36, -0.3, -0.55]
+      LH_foot: [-0.36, 0.3, -0.55]
+      RH_foot: [-0.36, -0.3, -0.55]
       lateral_offset: 0.03
       displacement: 0.04
     # The footstep search window
     footstep_search_window:
       LF_foot:
-        min_x: -0.15
+        min_x: -0.20
         max_x: 0.20
         min_y: -0.075
         max_y: 0.15
         resolution: 0.04
       RF_foot:
-        min_x: -0.15
+        min_x: -0.20
         max_x: 0.20
         min_y: -0.15
         max_y: 0.075
         resolution: 0.04
       LH_foot:
-        min_x: -0.15
+        min_x: -0.20
         max_x: 0.20
         min_y: -0.075
         max_y: 0.15
         resolution: 0.04
       RH_foot:
-        min_x: -0.15
+        min_x: -0.20
         max_x: 0.20
         min_y: -0.15
         max_y: 0.075
@@ -52,26 +52,26 @@ hyq:
     # The predefined leg workspace
     leg_workspace: #TODO test it!
       LF_foot:
-        min_x: -0.275
-        max_x: 0.18
+        min_x: -0.15
+        max_x: 0.15
         min_y: -0.125
         max_y: 0.125
         resolution: 0.04
       RF_foot:
-        min_x: -0.275
-        max_x: 0.18
+        min_x: -0.15
+        max_x: 0.15
         min_y: -0.125
         max_y: 0.125
         resolution: 0.04
       LH_foot:
-        min_x: 0.04
-        max_x: 0.275
+        min_x: 0.15
+        max_x: 0.15
         min_y: -0.125
         max_y: 0.125
         resolution: 0.04
       RH_foot:
-        min_x: 0.04
-        max_x: 0.275
+        min_x: 0.15
+        max_x: 0.15
         min_y: -0.125
         max_y: 0.125
         resolution: 0.04

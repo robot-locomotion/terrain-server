@@ -9,12 +9,11 @@
 	<!-- load hierarchical planner configurations from YAML file to parameter server -->
 	<rosparam file="$(find dwl_planners)/config/$(arg parameters).yaml" command="load"/>	
 
-	<node pkg="dwl_planners" type="hierarchical_planner_node" name="hierarchical_planner" output="screen" machine="$(arg machine)"
-	launch-prefix="xterm -e gdb --args">
+	<node pkg="dwl_planners" type="hierarchical_planner_node" name="hierarchical_planner" output="screen" machine="$(arg machine)">
 		<remap from="reward_map" to="/reward_map" />
 		<remap from="obstacle_map" to="/obstacle_map" />
 		<!-- fixed map frame (set to 'map' if SLAM or localization running!) -->
-		<param name="world_frame" type="string" value="odom" />
+		<param name="world_frame" type="string" value="world" />
 		<!-- Base frame of the robot -->
 		<param name="base_frame" type="string" value="base_link" />
 	</node>
