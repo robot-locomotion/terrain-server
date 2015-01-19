@@ -20,7 +20,7 @@ hierarchical_planner:
       name: LatticeBasedBodyAdjacency
       initial_inflation: 4
       features:
-        potential_leg_collision: {enable: true, weight: 50}
+        potential_leg_collision: {enable: true, weight: 50, clearance: 0.04, collision: 0.2}
         potential_body_orientation: {enable: true, weight: 50}
     # The maximum allowed computation time for path solver in seconds. Note that this time is used only in Anytime algorithms
     # The default computation time is 1 sec.
