@@ -9,9 +9,9 @@
 		<!-- fixed map frame (set to 'map' if SLAM or localization running!) -->
 		<param name="world_frame" type="string" value="odom" />
 		<param name="x_min" type="double" value="-0.50" />
-		<param name="x_max" type="double" value="0.80" />
-		<param name="y_min" type="double" value="-0.35" />
-		<param name="y_max" type="double" value="0.35" />
+		<param name="x_max" type="double" value="0.68" />
+		<param name="y_min" type="double" value="-0.40" />
+		<param name="y_max" type="double" value="0.40" />
 		<param name="resolution" type="double" value="0.01" />
 		<param name="height" type="double" value="-0.54" />
 	</node>
