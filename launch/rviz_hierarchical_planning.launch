@@ -8,6 +8,6 @@
 	<arg name="configuration" default="$(find dwl_planners)/rviz/hierarchical_planner.rviz"/>
 
 	<!-- run rviz -->
-	<node name="rviz" pkg="rviz" type="rviz" args="-d $(arg configuration) -f odom" machine="localhost"/>
+	<node name="rviz" pkg="rviz" type="rviz" args="-d $(arg configuration) -f world" machine="localhost"/>
 	
 </launch>
