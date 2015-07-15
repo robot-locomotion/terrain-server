@@ -1,4 +1,4 @@
-reward_map:
+terrain_reward_map:
   # Defining the search areas
   search_areas:
     - centre_front_1
@@ -19,7 +19,7 @@ reward_map:
   
   # Defining the features for the reward map generation
   features:
-    slope: {enable: true, weight: 300}
-    height_deviation: {enable: true, weight: 600, neighboring_area: {square_size: 0.08, resolution: 0.04}}
+    slope: {enable: false, weight: 300}
+    height_deviation: {enable: true, weight: 600, neighboring_area: {square_size: 0.08, resolution: 0.04},
+     flat_height_deviation: 0.01, max_height_deviation: 0.20, min_allowed_height: -0.66}
     curvature: {enable: false, weight: 100}
-    
