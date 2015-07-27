@@ -1,4 +1,4 @@
-hierarchical_planner:
+footstep_hierarchical_planner:
   # Defining the goal state
   goal: {x: 2.0, y: 0.0, yaw: 0.0}
   
@@ -22,8 +22,8 @@ hierarchical_planner:
       features:
         potential_leg_collision: {enable: true, weight: 50, clearance: 0.04, collision: 0.2}
         potential_body_orientation: {enable: true, weight: 50, max_roll: 30.0, max_pitch: 30.0} # degrees
-    # The maximum allowed computation time for path solver in seconds. Note that this time is used only in Anytime algorithms
-    # The default computation time is 1 sec.
+    # The maximum allowed computation time for path solver in seconds. Note that this time is used
+    # only in Anytime algorithms. The default computation time is 1 sec.
     path_computation_time: 15
     ###### TODO: pose_computation_time:
     
