@@ -1,4 +1,4 @@
-#include <dwl_planners/WholeBodyPlanner.h>
+#include <dwl_planners/DynamicWholeBodyPlanner.h>
 
 //#include <tests/model/HS071Constraint.cpp>
 //#include <tests/model/HS071Cost.cpp>
@@ -7,19 +7,19 @@
 namespace dwl_planners
 {
 
-WholeBodyPlanner::WholeBodyPlanner() : planning_ptr_(NULL), solver_(NULL), environment_(NULL)
+DynamicWholeBodyPlanner::DynamicWholeBodyPlanner() : planning_ptr_(NULL), solver_(NULL), environment_(NULL)
 {
 
 }
 
 
-WholeBodyPlanner::~WholeBodyPlanner()
+DynamicWholeBodyPlanner::~DynamicWholeBodyPlanner()
 {
 
 }
 
 
-void WholeBodyPlanner::init()
+void DynamicWholeBodyPlanner::init()
 {
 	solver_ = new dwl::solver::IpoptNLP();
 
@@ -35,7 +35,7 @@ void WholeBodyPlanner::init()
 }
 
 
-bool WholeBodyPlanner::compute()
+bool DynamicWholeBodyPlanner::compute()
 {
 
 	return true;
@@ -49,7 +49,7 @@ int main(int argc, char **argv)
 {
 	ros::init(argc, argv, "dynamic_wholebody_planner");
 
-	dwl_planners::WholeBodyPlanner planner;
+	dwl_planners::DynamicWholeBodyPlanner planner;
 
 	planner.init();
 	ros::spinOnce();
