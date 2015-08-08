@@ -28,8 +28,8 @@
 #include <environment/StancePostureFeature.h>
 
 // Messages headers
-#include <dwl_planners/ContactSequence.h>
-#include <dwl_planners/ContactRegion.h>
+#include <dwl_msgs/ContactSequence.h>
+#include <dwl_msgs/ContactRegion.h>
 #include <terrain_server/RewardMap.h>
 #include <terrain_server/ObstacleMap.h>
 #include <geometry_msgs/PoseStamped.h>
@@ -172,12 +172,12 @@ class FootstepHierarchicalPlanners
 		nav_msgs::Path body_path_msg_;
 
 		/** @brief Contact sequence ROS message */
-		dwl_planners::ContactSequence contact_sequence_msg_;
+		dwl_msgs::ContactSequence contact_sequence_msg_;
 
 		/** @brief Contact sequence for visualization in RVIZ */
 		visualization_msgs::Marker contact_sequence_rviz_msg_;
 
-		dwl_planners::ContactRegion contact_regions_msg_;
+		dwl_msgs::ContactRegion contact_regions_msg_;
 
 		/** @brief Approximated body path */
 		std::vector<dwl::Pose> body_path_;

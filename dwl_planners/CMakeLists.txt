@@ -6,38 +6,11 @@ find_package(catkin REQUIRED COMPONENTS
   dwl
   roscpp
   rospy
-  std_msgs
-  message_generation
+  dwl_msgs
   tf
   tf_conversions)
 
 find_package(dwl REQUIRED)
-
-
-add_message_files(
-   FILES
-    Region.msg
-    Contact.msg
-    ContactSequence.msg
-    ContactRegion.msg
-    JointState.msg
-    WholeBodyState.msg
-    WholeBodyTrajectory.msg)
-
-
-## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
-#   Service2.srv
-# )
-
-## Generate actions in the 'action' folder
-# add_action_files(
-#   FILES
-#   Action1.action
-#   Action2.action
-# )
 
 
 generate_messages(
@@ -49,7 +22,7 @@ generate_messages(
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME}
-  CATKIN_DEPENDS roscpp message_runtime
+  CATKIN_DEPENDS roscpp dwl_msgs message_runtime
   DEPENDS system_lib)
 
 
@@ -65,19 +38,17 @@ add_executable(footstep_hierarchical_planner_node  src/FootstepHierarchicalPlann
 add_dependencies(footstep_hierarchical_planner_node  ${catkin_EXPORTED_TARGETS})
 target_link_libraries(footstep_hierarchical_planner_node  ${catkin_LIBRARIES}
                                                           ${dwl_LIBRARIES})
-add_dependencies(footstep_hierarchical_planner_node ${PROJECT_NAME}_gencpp)
 
 add_executable(constrained_whole_body_planner_node  src/ConstrainedWholeBodyPlanner.cpp)
 add_dependencies(constrained_whole_body_planner_node  ${catkin_EXPORTED_TARGETS})
 target_link_libraries(constrained_whole_body_planner_node  ${catkin_LIBRARIES}
                                                            ${dwl_LIBRARIES})
-add_dependencies(constrained_whole_body_planner_node ${PROJECT_NAME}_gencpp)
 
 add_executable(dynamic_whole_body_planner_node  src/DynamicWholeBodyPlanner.cpp)
 add_dependencies(dynamic_whole_body_planner_node  ${catkin_EXPORTED_TARGETS})
 target_link_libraries(dynamic_whole_body_planner_node  ${catkin_LIBRARIES}
                                                        ${dwl_LIBRARIES})
-add_dependencies(dynamic_whole_body_planner_node ${PROJECT_NAME}_gencpp)
+
 
 #############
 ## Install ##

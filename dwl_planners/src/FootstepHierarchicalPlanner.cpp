@@ -32,9 +32,9 @@ void FootstepHierarchicalPlanners::init()
 
 	// Declaring the publisher of approximated body path
 	body_path_pub_ = node_.advertise<nav_msgs::Path>("body_path", 1);
-	contact_sequence_pub_ = node_.advertise<dwl_planners::ContactSequence>("contact_sequence", 1);
+	contact_sequence_pub_ = node_.advertise<dwl_msgs::ContactSequence>("contact_sequence", 1);
 	contact_sequence_rviz_pub_ = node_.advertise<visualization_msgs::Marker>("contact_sequence_markers", 1);
-	contact_regions_pub_ = node_.advertise<dwl_planners::ContactRegion>("contact_regions", 1);
+	contact_regions_pub_ = node_.advertise<dwl_msgs::ContactRegion>("contact_regions", 1);
 
 	// Initializing the mutex
 	if (pthread_mutex_init(&reward_lock_, NULL) != 0)

@@ -11,7 +11,7 @@
 #include <solver/IpoptNLP.h>
 
 // Messages headers
-#include <dwl_planners/WholeBodyTrajectory.h>
+#include <dwl_msgs/WholeBodyTrajectory.h>
 
 
 namespace dwl_planners
@@ -39,17 +39,17 @@ class ConstrainedWholeBodyPlanner
 	private:
 		/**
 		 * @brief Writes the whole-body state message from a locomotion state
-		 * @param dwl_planners::WholeBodyState& Whole-body state message
+		 * @param dwl_msgs::WholeBodyState& Whole-body state message
 		 * @param const dwl::LocomotionState& Locomotion state
 		 */
-		void writeWholeBodyStateMessage(dwl_planners::WholeBodyState& msg,
+		void writeWholeBodyStateMessage(dwl_msgs::WholeBodyState& msg,
 										const dwl::LocomotionState& state);
 
 		/**
 		 * @brief Callback method when the robot state message arrives
-		 * @param const dwl_planners::WholeBodyStateConstPtr& Robot state message
+		 * @param const dwl_msgs::WholeBodyStateConstPtr& Robot state message
 		 */
-		void robotStateCallback(const dwl_planners::WholeBodyStateConstPtr& msg);
+		void robotStateCallback(const dwl_msgs::WholeBodyStateConstPtr& msg);
 
 
 		/** @brief Ros node handle */
@@ -80,7 +80,7 @@ class ConstrainedWholeBodyPlanner
 		double computation_time_;
 
 		/** @brief Whole-body trajectory message */
-		dwl_planners::WholeBodyTrajectory robot_trajectory_msg_;
+		dwl_msgs::WholeBodyTrajectory robot_trajectory_msg_;
 };
 
 } //@namespace dwl_planners

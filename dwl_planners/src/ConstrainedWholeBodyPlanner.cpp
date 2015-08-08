@@ -25,8 +25,8 @@ ConstrainedWholeBodyPlanner::~ConstrainedWholeBodyPlanner()
 void ConstrainedWholeBodyPlanner::init()
 {
 	// Setting publishers and subscribers
-	motion_plan_pub_ = node_.advertise<dwl_planners::WholeBodyTrajectory>("whole_body_trajectory", 1);
-	robot_state_sub_ = node_.subscribe<dwl_planners::WholeBodyState>("/robot_state", 1,
+	motion_plan_pub_ = node_.advertise<dwl_msgs::WholeBodyTrajectory>("whole_body_trajectory", 1);
+	robot_state_sub_ = node_.subscribe<dwl_msgs::WholeBodyState>("/robot_state", 1,
 			&ConstrainedWholeBodyPlanner::robotStateCallback, this);
 
 	// Initializing the planning optimizer
@@ -235,7 +235,7 @@ void ConstrainedWholeBodyPlanner::publishWholeBodyTrajectory()
 
 
 
-void ConstrainedWholeBodyPlanner::writeWholeBodyStateMessage(dwl_planners::WholeBodyState& msg,
+void ConstrainedWholeBodyPlanner::writeWholeBodyStateMessage(dwl_msgs::WholeBodyState& msg,
 															 const dwl::LocomotionState& state)
 {
 	// Getting the floating-base system information
@@ -279,7 +279,7 @@ void ConstrainedWholeBodyPlanner::writeWholeBodyStateMessage(dwl_planners::Whole
 }
 
 
-void ConstrainedWholeBodyPlanner::robotStateCallback(const dwl_planners::WholeBodyStateConstPtr& msg)
+void ConstrainedWholeBodyPlanner::robotStateCallback(const dwl_msgs::WholeBodyStateConstPtr& msg)
 {
 	// Getting the floating system information
 	dwl::rbd::FloatingBaseSystem system = planning_.getDynamicalSystem()->getFloatingBaseSystem();
