@@ -6,23 +6,16 @@ find_package(catkin REQUIRED COMPONENTS
   dwl
   roscpp
   rospy
-  dwl_msgs
   tf
   tf_conversions)
 
 find_package(dwl REQUIRED)
 
 
-generate_messages(
-   DEPENDENCIES
-   std_msgs
-   geometry_msgs)
-   
-
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME}
-  CATKIN_DEPENDS roscpp dwl_msgs message_runtime
+  CATKIN_DEPENDS roscpp
   DEPENDS system_lib)
 
 

@@ -21,7 +21,6 @@
   <buildtool_depend>catkin</buildtool_depend>
   
   <build_depend>dwl</build_depend>
-  <build_depend>dwl_msgs</build_depend>
   <build_depend>terrain_server</build_depend>
   <build_depend>roscpp</build_depend>
   <build_depend>rospy</build_depend>
