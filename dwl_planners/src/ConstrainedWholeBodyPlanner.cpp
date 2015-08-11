@@ -214,7 +214,7 @@ void ConstrainedWholeBodyPlanner::publishWholeBodyTrajectory()
 		robot_trajectory_msg_.header.stamp = ros::Time::now();
 
 		// Filling the current state
-		writeWholeBodyStateMessage(robot_trajectory_msg_.current_state,
+		writeWholeBodyStateMessage(robot_trajectory_msg_.actual,
 								   current_state_);
 
 		// Filling the trajectory message
