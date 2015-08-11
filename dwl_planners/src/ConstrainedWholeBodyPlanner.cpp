@@ -47,7 +47,7 @@ void ConstrainedWholeBodyPlanner::init()
 
 	// Adding the dynamical system
 	planning_.addDynamicalSystem(dynamical_system);
-	dwl::rbd::FloatingBaseSystem system = planning_.getDynamicalSystem()->getFloatingBaseSystem();
+	dwl::model::FloatingBaseSystem system = planning_.getDynamicalSystem()->getFloatingBaseSystem();
 
 
 	// Reading the desired position states
@@ -239,7 +239,7 @@ void ConstrainedWholeBodyPlanner::writeWholeBodyStateMessage(dwl_msgs::WholeBody
 															 const dwl::LocomotionState& state)
 {
 	// Getting the floating-base system information
-	dwl::rbd::FloatingBaseSystem system = planning_.getDynamicalSystem()->getFloatingBaseSystem();
+	dwl::model::FloatingBaseSystem system = planning_.getDynamicalSystem()->getFloatingBaseSystem();
 
 	// Filling the time information
 	msg.time = state.time;
@@ -282,7 +282,7 @@ void ConstrainedWholeBodyPlanner::writeWholeBodyStateMessage(dwl_msgs::WholeBody
 void ConstrainedWholeBodyPlanner::robotStateCallback(const dwl_msgs::WholeBodyStateConstPtr& msg)
 {
 	// Getting the floating system information
-	dwl::rbd::FloatingBaseSystem system = planning_.getDynamicalSystem()->getFloatingBaseSystem();
+	dwl::model::FloatingBaseSystem system = planning_.getDynamicalSystem()->getFloatingBaseSystem();
 
 	// Setting the base information
 	for (unsigned int base_idx = 0; base_idx < 6; base_idx++) {
