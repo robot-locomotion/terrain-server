@@ -25,7 +25,7 @@ ConstrainedWholeBodyPlanner::~ConstrainedWholeBodyPlanner()
 void ConstrainedWholeBodyPlanner::init()
 {
 	// Setting publishers and subscribers
-	motion_plan_pub_ = node_.advertise<dwl_msgs::WholeBodyTrajectory>("whole_body_trajectory", 1);
+	motion_plan_pub_ = node_.advertise<dwl_msgs::WholeBodyTrajectory>("/hyl/constrained_operational_controller/plan", 1);
 	robot_state_sub_ = node_.subscribe<dwl_msgs::WholeBodyState>("/robot_state", 1,
 			&ConstrainedWholeBodyPlanner::robotStateCallback, this);
 
