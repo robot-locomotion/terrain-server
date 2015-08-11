@@ -245,32 +245,32 @@ void ConstrainedWholeBodyPlanner::writeWholeBodyStateMessage(dwl_msgs::WholeBody
 	msg.time = state.time;
 
 	// Filling the base state
-	msg.base_ids.resize(system.getFloatingBaseDoF());
-	msg.base_names.resize(system.getFloatingBaseDoF());
-	msg.base.resize(6);
+	msg.base.resize(system.getFloatingBaseDoF());
 	unsigned int counter = 0;
 	for (unsigned int base_idx = 0; base_idx < 6; base_idx++) {
-		if (system.getFloatingBaseJoint((dwl::rbd::Coords6d) base_idx).active) {
-			msg.base_ids[counter] = base_idx;
-			msg.base_names[counter] = system.getFloatingBaseJoint((dwl::rbd::Coords6d) base_idx).name;
+		dwl::rbd::Coords6d base_coord = dwl::rbd::Coords6d(base_idx);
+		dwl::model::FloatingBaseJoint base_joint = system.getFloatingBaseJoint(base_coord);
+
+		if (base_joint.active) {
+			msg.base[counter].id = base_idx;
+			msg.base[counter].name = base_joint.name;
+
+			msg.base[counter].position = state.base_pos(base_idx);
+			msg.base[counter].velocity = state.base_vel(base_idx);
+			msg.base[counter].acceleration = state.base_acc(base_idx);
+
 			counter++;
 		}
-	}
-	for (unsigned int base_idx = 0; base_idx < 6; base_idx++) {
-		msg.base[base_idx].position = state.base_pos(base_idx);
-		msg.base[base_idx].velocity = state.base_vel(base_idx);
-		msg.base[base_idx].acceleration = state.base_acc(base_idx);
 	}
 
 	// Filling the joint state
 	msg.joints.resize(system.getJointDoF());
-	msg.joint_names.resize(system.getJointDoF());
 	for (dwl::urdf_model::JointID::const_iterator jnt_it = system.getJoints().begin();
 			jnt_it != system.getJoints().end(); jnt_it++) {
 		unsigned int joint_idx =  jnt_it->second - system.getFloatingBaseDoF();
 		std::string joint_name = jnt_it->first;
 
-		msg.joint_names[joint_idx] = joint_name;
+		msg.joints[joint_idx].name = joint_name;
 		msg.joints[joint_idx].position = state.joint_pos(joint_idx);
 		msg.joints[joint_idx].velocity = state.joint_vel(joint_idx);
 		msg.joints[joint_idx].acceleration = state.joint_acc(joint_idx);
@@ -285,15 +285,21 @@ void ConstrainedWholeBodyPlanner::robotStateCallback(const dwl_msgs::WholeBodySt
 	dwl::model::FloatingBaseSystem system = planning_.getDynamicalSystem()->getFloatingBaseSystem();
 
 	// Setting the base information
-	for (unsigned int base_idx = 0; base_idx < 6; base_idx++) {
-		current_state_.base_pos(base_idx) = msg->base[base_idx].position;
-		current_state_.base_vel(base_idx) = msg->base[base_idx].velocity;
-		current_state_.base_acc(base_idx) = msg->base[base_idx].acceleration;
+	current_state_.base_pos.setZero();
+	current_state_.base_vel.setZero();
+	current_state_.base_acc.setZero();
+	unsigned int base_dof = msg->base.size();
+	for (unsigned int base_idx = 0; base_idx < base_dof; base_idx++) {
+		unsigned int base_coord = msg->base[base_idx].id;
+
+		current_state_.base_pos(base_coord) = msg->base[base_idx].position;
+		current_state_.base_vel(base_coord) = msg->base[base_idx].velocity;
+		current_state_.base_acc(base_coord) = msg->base[base_idx].acceleration;
 	}
 
 	// Setting the joint information
 	for (unsigned int jnt_idx = 0; jnt_idx < system.getJointDoF(); jnt_idx++) {
-		std::string joint_name = msg->joint_names[jnt_idx];
+		std::string joint_name = msg->joints[jnt_idx].name;
 		unsigned int joint_id = system.getJoints().find(joint_name)->second -
 				system.getFloatingBaseDoF();
 
