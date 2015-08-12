@@ -12,6 +12,7 @@
 
 // Messages headers
 #include <dwl_msgs/WholeBodyTrajectory.h>
+#include <sensor_msgs/JointState.h>
 
 
 namespace dwl_planners
@@ -46,10 +47,10 @@ class ConstrainedWholeBodyPlanner
 										const dwl::LocomotionState& state);
 
 		/**
-		 * @brief Callback method when the robot state message arrives
-		 * @param const dwl_msgs::WholeBodyStateConstPtr& Robot state message
+		 * @brief Callback method when the joint state message arrives
+		 * @param const sensor_msgs::JointStateConstPtr& Robot state message
 		 */
-		void robotStateCallback(const dwl_msgs::WholeBodyStateConstPtr& msg);
+		void jointStateCallback(const sensor_msgs::JointStateConstPtr& msg);
 
 
 		/** @brief Ros node handle */
@@ -81,6 +82,9 @@ class ConstrainedWholeBodyPlanner
 
 		/** @brief Whole-body trajectory message */
 		dwl_msgs::WholeBodyTrajectory robot_trajectory_msg_;
+
+		/** @brief Returns true when a new current state message has arrived */
+		bool new_current_state_;
 };
 
 } //@namespace dwl_planners

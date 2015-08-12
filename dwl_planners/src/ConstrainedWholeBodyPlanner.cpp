@@ -5,7 +5,7 @@ namespace dwl_planners
 {
 
 ConstrainedWholeBodyPlanner::ConstrainedWholeBodyPlanner(ros::NodeHandle node) : privated_node_(node),
-		interpolation_time_(0.), computation_time_(0.)
+		interpolation_time_(0.), computation_time_(0.), new_current_state_(false)
 {
 	current_state_.joint_pos = Eigen::VectorXd::Zero(2);
 	current_state_.joint_pos << 0.6, -1.5;
@@ -26,8 +26,8 @@ void ConstrainedWholeBodyPlanner::init()
 {
 	// Setting publishers and subscribers
 	motion_plan_pub_ = node_.advertise<dwl_msgs::WholeBodyTrajectory>("/hyl/constrained_operational_controller/plan", 1);
-	robot_state_sub_ = node_.subscribe<dwl_msgs::WholeBodyState>("/robot_state", 1,
-			&ConstrainedWholeBodyPlanner::robotStateCallback, this);
+	robot_state_sub_ = node_.subscribe<sensor_msgs::JointState>("/hyl/joint_states", 1,
+			&ConstrainedWholeBodyPlanner::jointStateCallback, this);
 
 	// Initializing the planning optimizer
 	dwl::solver::IpoptNLP* ipopt_solver = new dwl::solver::IpoptNLP();
@@ -203,7 +203,11 @@ void ConstrainedWholeBodyPlanner::init()
 
 bool ConstrainedWholeBodyPlanner::compute()
 {
-	return planning_.compute(current_state_, desired_state_, computation_time_);
+	if (new_current_state_) {
+		new_current_state_ = false;
+		return planning_.compute(current_state_, desired_state_, computation_time_);
+	} else
+		return false;
 }
 
 
@@ -279,35 +283,44 @@ void ConstrainedWholeBodyPlanner::writeWholeBodyStateMessage(dwl_msgs::WholeBody
 }
 
 
-void ConstrainedWholeBodyPlanner::robotStateCallback(const dwl_msgs::WholeBodyStateConstPtr& msg)
+void ConstrainedWholeBodyPlanner::jointStateCallback(const sensor_msgs::JointStateConstPtr& msg)
 {
 	// Getting the floating system information
 	dwl::model::FloatingBaseSystem system = planning_.getDynamicalSystem()->getFloatingBaseSystem();
 
-	// Setting the base information
+	// Setting the base and joint information
 	current_state_.base_pos.setZero();
 	current_state_.base_vel.setZero();
 	current_state_.base_acc.setZero();
-	unsigned int base_dof = msg->base.size();
-	for (unsigned int base_idx = 0; base_idx < base_dof; base_idx++) {
-		unsigned int base_coord = msg->base[base_idx].id;
+	dwl::urdf_model::JointID joints = system.getJoints();
+	for (unsigned int jnt_idx = 0; jnt_idx < system.getSystemDoF(); jnt_idx++) {
+		std::string joint_name = msg->name[jnt_idx];
 
-		current_state_.base_pos(base_coord) = msg->base[base_idx].position;
-		current_state_.base_vel(base_coord) = msg->base[base_idx].velocity;
-		current_state_.base_acc(base_coord) = msg->base[base_idx].acceleration;
+		dwl::urdf_model::JointID::iterator joint_it = joints.find(joint_name);
+		if (joint_it != joints.end()) {
+			unsigned int joint_id = joint_it->second - system.getFloatingBaseDoF();
+
+			current_state_.joint_pos(joint_id) = msg->position[jnt_idx];
+			current_state_.joint_vel(joint_id) = msg->velocity[jnt_idx];
+			current_state_.joint_acc(joint_id) = 0.;
+			current_state_.joint_eff(joint_id) = msg->effort[jnt_idx];
+		} else {
+			for (unsigned int base_idx = 0; base_idx < 6; base_idx++) {
+				dwl::rbd::Coords6d base_coord = dwl::rbd::Coords6d(base_idx);
+				dwl::model::FloatingBaseJoint base_joint = system.getFloatingBaseJoint(base_coord);
+
+				if (base_joint.active) {
+					if (base_joint.name == joint_name) {
+						current_state_.base_pos(base_coord) = msg->position[jnt_idx];
+						current_state_.base_vel(base_coord) = msg->velocity[jnt_idx];
+						current_state_.base_acc(base_coord) = 0.;
+					}
+				}
+			}
+		}
 	}
 
-	// Setting the joint information
-	for (unsigned int jnt_idx = 0; jnt_idx < system.getJointDoF(); jnt_idx++) {
-		std::string joint_name = msg->joints[jnt_idx].name;
-		unsigned int joint_id = system.getJoints().find(joint_name)->second -
-				system.getFloatingBaseDoF();
-
-		current_state_.joint_pos(joint_id) = msg->joints[jnt_idx].position;
-		current_state_.joint_vel(joint_id) = msg->joints[jnt_idx].velocity;
-		current_state_.joint_acc(joint_id) = msg->joints[jnt_idx].acceleration;
-		current_state_.joint_eff(joint_id) = msg->joints[jnt_idx].effort;
-	}
+	new_current_state_ = true;
 }
 
 } //@namespace dwl_planners
