@@ -343,6 +343,7 @@ int main(int argc, char **argv)
 		while (ros::ok()) {
 			if (planner.compute()) {
 				planner.publishWholeBodyTrajectory();
+				return 0;
 			}
 			ros::spinOnce();
 			loop_rate.sleep();
