@@ -5,7 +5,7 @@ namespace dwl_planners
 {
 
 ModeInvariantWholeBodyPlanner::ModeInvariantWholeBodyPlanner(ros::NodeHandle node) : privated_node_(node),
-		interpolation_time_(0.), computation_time_(0.), new_current_state_(false)
+		interpolation_time_(0.), computation_time_(0.), new_current_state_(true)//(false)
 {
 	current_state_.joint_pos = Eigen::VectorXd::Zero(2);
 	current_state_.joint_pos << 0.6, -1.5;
@@ -13,6 +13,8 @@ ModeInvariantWholeBodyPlanner::ModeInvariantWholeBodyPlanner(ros::NodeHandle nod
 	current_state_.joint_acc = Eigen::VectorXd::Zero(2);
 	current_state_.joint_eff = Eigen::VectorXd::Zero(2);
 	current_state_.joint_eff << 9.33031, 27.6003;
+	current_state_.contacts.resize(1);
+	current_state_.contacts[0].force = Eigen::Vector3d::Zero();
 }
 
 
@@ -37,17 +39,19 @@ void ModeInvariantWholeBodyPlanner::init()
 
 	// Initializing the dynamical system constraint
 	std::string model_file = "/home/cmastalli/ros_workspace/src/dwl/thirdparty/rbdl/hyl.urdf";
-	dwl::model::ConstrainedDynamicalSystem* system_constraint = new dwl::model::ConstrainedDynamicalSystem();
+	dwl::model::FullDynamicalSystem* system_constraint = new dwl::model::FullDynamicalSystem();
 	dwl::model::DynamicalSystem* dynamical_system = system_constraint;
 
-	dwl::rbd::BodySelector active_contact;
-	active_contact.push_back("foot");
-	system_constraint->setActiveEndEffectors(active_contact);
 	dynamical_system->modelFromURDFFile(model_file, true);
 
 	// Adding the dynamical system
 	planning_.addDynamicalSystem(dynamical_system);
 	dwl::model::FloatingBaseSystem system = planning_.getDynamicalSystem()->getFloatingBaseSystem();
+
+	// Adding the contact model constraint
+	dwl::model::InelasticContactModelConstraint* contact_constraint = new dwl::model::InelasticContactModelConstraint();
+	contact_constraint->modelFromURDFFile(model_file);
+	planning_.addConstraint(contact_constraint);
 
 
 	// Reading the desired position states
@@ -240,7 +244,7 @@ void ModeInvariantWholeBodyPlanner::publishWholeBodyTrajectory()
 
 
 void ModeInvariantWholeBodyPlanner::writeWholeBodyStateMessage(dwl_msgs::WholeBodyState& msg,
-															 const dwl::LocomotionState& state)
+															   const dwl::LocomotionState& state)
 {
 	// Getting the floating-base system information
 	dwl::model::FloatingBaseSystem system = planning_.getDynamicalSystem()->getFloatingBaseSystem();
@@ -343,7 +347,7 @@ int main(int argc, char **argv)
 		while (ros::ok()) {
 			if (planner.compute()) {
 				planner.publishWholeBodyTrajectory();
-				return 0;
+//				return 0;
 			}
 			ros::spinOnce();
 			loop_rate.sleep();

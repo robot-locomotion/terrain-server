@@ -5,7 +5,8 @@
 
 // Locomotion headers
 #include <locomotion/WholeBodyTrajectoryOptimization.h>
-#include <model/ConstrainedDynamicalSystem.h>
+#include <model/FullDynamicalSystem.h>
+#include <model/InelasticContactModelConstraint.h>
 #include <model/StateTrackingEnergyCost.h>
 #include <model/ControlEnergyCost.h>
 #include <solver/IpoptNLP.h>
@@ -27,7 +28,7 @@ class ModeInvariantWholeBodyPlanner
 		/** @brief Destructor function */
 		~ModeInvariantWholeBodyPlanner();
 
-		/** @brief Initializes the constrained whole-body planner */
+		/** @brief Initializes the mode-invariant whole-body planner */
 		void init();
 
 		/** @brief Computes the whole-body trajectory */
