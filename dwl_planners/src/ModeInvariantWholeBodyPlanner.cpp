@@ -1,4 +1,4 @@
-#include <dwl_planners/DynamicWholeBodyPlanner.h>
+#include <dwl_planners/ModeInvariantWholeBodyPlanner.h>
 
 
 namespace dwl_planners
