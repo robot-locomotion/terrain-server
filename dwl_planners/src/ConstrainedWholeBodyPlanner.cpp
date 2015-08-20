@@ -13,6 +13,11 @@ ConstrainedWholeBodyPlanner::ConstrainedWholeBodyPlanner(ros::NodeHandle node) :
 	current_state_.joint_acc = Eigen::VectorXd::Zero(2);
 	current_state_.joint_eff = Eigen::VectorXd::Zero(2);
 	current_state_.joint_eff << 9.33031, 27.6003;
+	current_state_.contacts.resize(1);
+	current_state_.contacts[0].position = Eigen::Vector3d::Zero();
+	current_state_.contacts[0].velocity = Eigen::Vector3d::Zero();
+	current_state_.contacts[0].acceleration = Eigen::Vector3d::Zero();
+	current_state_.contacts[0].force = Eigen::Vector3d::Zero();
 }
 
 
