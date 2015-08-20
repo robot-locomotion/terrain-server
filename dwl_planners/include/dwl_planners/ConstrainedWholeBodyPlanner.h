@@ -6,8 +6,9 @@
 // Locomotion headers
 #include <locomotion/WholeBodyTrajectoryOptimization.h>
 #include <model/ConstrainedDynamicalSystem.h>
-#include <model/StateTrackingEnergyCost.h>
-#include <model/ControlEnergyCost.h>
+#include <model/TerminalStateTrackingEnergyCost.h>
+#include <model/IntegralStateTrackingEnergyCost.h>
+#include <model/IntegralControlEnergyCost.h>
 #include <solver/IpoptNLP.h>
 
 // Messages headers

@@ -7,8 +7,10 @@
 #include <locomotion/WholeBodyTrajectoryOptimization.h>
 #include <model/FullDynamicalSystem.h>
 #include <model/InelasticContactModelConstraint.h>
-#include <model/StateTrackingEnergyCost.h>
-#include <model/ControlEnergyCost.h>
+#include <model/InelasticContactVelocityConstraint.h>
+#include <model/TerminalStateTrackingEnergyCost.h>
+#include <model/IntegralStateTrackingEnergyCost.h>
+#include <model/IntegralControlEnergyCost.h>
 #include <solver/IpoptNLP.h>
 
 // Messages headers

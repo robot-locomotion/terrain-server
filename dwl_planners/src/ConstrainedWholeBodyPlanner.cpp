@@ -95,6 +95,12 @@ void ConstrainedWholeBodyPlanner::init()
 	desired_state_.base_acc(dwl::rbd::AZ) = angular_z;
 
 
+	// Reading the dynamical constraint configuration parameters
+	double step_time;
+	privated_node_.param("dynamical_system/time_integration/step_time", step_time, 0.1);
+	planning_.setStepIntegrationTime(step_time);
+
+
 	// Reading the cost weights
 	dwl::LocomotionState weights(system.getJointDoF());
 
@@ -177,9 +183,9 @@ void ConstrainedWholeBodyPlanner::init()
 	}
 
 	// Setting the cost functions
-	dwl::model::Cost* state_tracking_cost = new dwl::model::StateTrackingEnergyCost();
+	dwl::model::Cost* state_tracking_cost = new dwl::model::TerminalStateTrackingEnergyCost();
 	state_tracking_cost->setWeights(weights);
-	dwl::model::Cost* control_cost = new dwl::model::ControlEnergyCost();
+	dwl::model::Cost* control_cost = new dwl::model::IntegralControlEnergyCost();
 	control_cost->setWeights(weights);
 
 
@@ -279,6 +285,36 @@ void ConstrainedWholeBodyPlanner::writeWholeBodyStateMessage(dwl_msgs::WholeBody
 		msg.joints[joint_idx].velocity = state.joint_vel(joint_idx);
 		msg.joints[joint_idx].acceleration = state.joint_acc(joint_idx);
 		msg.joints[joint_idx].effort = state.joint_eff(joint_idx);
+	}
+
+	// Filling the contact state
+	msg.contacts.resize(system.getNumberOfEndEffectors());
+	for (dwl::urdf_model::LinkID::const_iterator ee_it = system.getEndEffectors().begin();
+			ee_it != system.getEndEffectors().end(); ee_it++) {
+		unsigned int ee_idx =  ee_it->second;
+		std::string ee_name = ee_it->first;
+
+		msg.contacts[ee_idx].name = ee_name;
+
+		// Positions
+		msg.contacts[ee_idx].position.x = state.contacts[ee_idx].position(dwl::rbd::X);
+		msg.contacts[ee_idx].position.y = state.contacts[ee_idx].position(dwl::rbd::Y);
+		msg.contacts[ee_idx].position.z = state.contacts[ee_idx].position(dwl::rbd::Z);
+
+		// Velocities
+		msg.contacts[ee_idx].velocity.x = state.contacts[ee_idx].velocity(dwl::rbd::X);
+		msg.contacts[ee_idx].velocity.y = state.contacts[ee_idx].velocity(dwl::rbd::Y);
+		msg.contacts[ee_idx].velocity.z = state.contacts[ee_idx].velocity(dwl::rbd::Z);
+
+		// Accelerations
+		msg.contacts[ee_idx].acceleration.x = state.contacts[ee_idx].acceleration(dwl::rbd::X);
+		msg.contacts[ee_idx].acceleration.y = state.contacts[ee_idx].acceleration(dwl::rbd::Y);
+		msg.contacts[ee_idx].acceleration.z = state.contacts[ee_idx].acceleration(dwl::rbd::Z);
+
+		// Forces
+		msg.contacts[ee_idx].wrench.force.x = state.contacts[ee_idx].force(dwl::rbd::X);
+		msg.contacts[ee_idx].wrench.force.y = state.contacts[ee_idx].force(dwl::rbd::Y);
+		msg.contacts[ee_idx].wrench.force.z = state.contacts[ee_idx].force(dwl::rbd::Z);
 	}
 }
 
