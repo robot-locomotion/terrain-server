@@ -15,7 +15,7 @@ constrained_whole_body_planner:
   
   # Defines the cost weights used by the cost functions implemented in the optimizer
   # Defaults values of the weights are 0.
-  cost:
+  terminal_cost:
     state_tracking_energy:
       position:
         base: {LX: 1000., LY: 1000., LZ: 1000., AX: 1000., AY: 1000., AZ: 1000.}
@@ -25,7 +25,18 @@ constrained_whole_body_planner:
         joints: {hfe_joint: 10., kfe_joint: 10.}
       acceleration:
         base: {LX: 0.1, LY: 0.1, LZ: 0.1, AX: 0.1, AY: 0.1, AZ: 0.1}  
-        joints: {hfe_joint: 0.1, kfe_joint: 0.1}      
+        joints: {hfe_joint: 0.1, kfe_joint: 0.1}
+  integral_cost:
+    state_tracking_energy:
+      position:
+        base: {LX: 1000., LY: 1000., LZ: 1000., AX: 1000., AY: 1000., AZ: 1000.}
+        joints: {hfe_joint: 0., kfe_joint: 0.}
+      velocity:
+        base: {LX: 10., LY: 10., LZ: 10., AX: 10., AY: 10., AZ: 10.}
+        joints: {hfe_joint: 10., kfe_joint: 10.}
+      acceleration:
+        base: {LX: 0.1, LY: 0.1, LZ: 0.1, AX: 0.1, AY: 0.1, AZ: 0.1}  
+        joints: {hfe_joint: 0.1, kfe_joint: 0.1}   
     control_energy:
       hfe_joint: 0.001
       kfe_joint: 0.001

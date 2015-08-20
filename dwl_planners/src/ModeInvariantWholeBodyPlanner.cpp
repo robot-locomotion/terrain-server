@@ -59,49 +59,105 @@ void ModeInvariantWholeBodyPlanner::init()
 	planning_.addConstraint(contact_vel_constraint);
 
 
-	// Reading the desired position states
+	// Initializing the desired state, integral and terminal cost weights
 	desired_state_.setJointDoF(system.getJointDoF());
-	double linear_x, linear_y, linear_z, angular_x, angular_y, angular_z;
-	privated_node_.param("desired_state/position/LX", linear_x, 0.0);
-	privated_node_.param("desired_state/position/LY", linear_y, 0.0);
-	privated_node_.param("desired_state/position/LZ", linear_z, 0.0);
-	privated_node_.param("desired_state/position/AX", angular_x, 0.0);
-	privated_node_.param("desired_state/position/AY", angular_y, 0.0);
-	privated_node_.param("desired_state/position/AZ", angular_z, 0.0);
-	desired_state_.base_pos(dwl::rbd::LX) = linear_x;
-	desired_state_.base_pos(dwl::rbd::LY) = linear_y;
-	desired_state_.base_pos(dwl::rbd::LZ) = linear_z;
-	desired_state_.base_pos(dwl::rbd::AX) = angular_x;
-	desired_state_.base_pos(dwl::rbd::AY) = angular_y;
-	desired_state_.base_pos(dwl::rbd::AZ) = angular_z;
+	dwl::LocomotionState integral_weights(system.getJointDoF());
+	dwl::LocomotionState terminal_weights(system.getJointDoF());
 
-	// Reading the desired velocity states
-	privated_node_.param("desired_state/velocity/LX", linear_x, 0.0);
-	privated_node_.param("desired_state/velocity/LY", linear_y, 0.0);
-	privated_node_.param("desired_state/velocity/LZ", linear_z, 0.0);
-	privated_node_.param("desired_state/velocity/AX", angular_x, 0.0);
-	privated_node_.param("desired_state/velocity/AY", angular_y, 0.0);
-	privated_node_.param("desired_state/velocity/AZ", angular_z, 0.0);
-	desired_state_.base_vel(dwl::rbd::LX) = linear_x;
-	desired_state_.base_vel(dwl::rbd::LY) = linear_y;
-	desired_state_.base_vel(dwl::rbd::LZ) = linear_z;
-	desired_state_.base_vel(dwl::rbd::AX) = angular_x;
-	desired_state_.base_vel(dwl::rbd::AY) = angular_y;
-	desired_state_.base_vel(dwl::rbd::AZ) = angular_z;
+	// Reading base information
+	const char* base_names[] = {"AX", "AY", "AZ", "LX", "LY", "LZ"};
+	for (unsigned int coord_idx = 0; coord_idx < 6; coord_idx++) {
+		dwl::rbd::Coords6d coord = dwl::rbd::Coords6d(coord_idx);
+		std::string name = base_names[coord_idx];
+		double value;
 
-	// Reading the desired acceleration states
-	privated_node_.param("desired_state/acceleration/LX", linear_x, 0.0);
-	privated_node_.param("desired_state/acceleration/LY", linear_y, 0.0);
-	privated_node_.param("desired_state/acceleration/LZ", linear_z, 0.0);
-	privated_node_.param("desired_state/acceleration/AX", angular_x, 0.0);
-	privated_node_.param("desired_state/acceleration/AY", angular_y, 0.0);
-	privated_node_.param("desired_state/acceleration/AZ", angular_z, 0.0);
-	desired_state_.base_acc(dwl::rbd::LX) = linear_x;
-	desired_state_.base_acc(dwl::rbd::LY) = linear_y;
-	desired_state_.base_acc(dwl::rbd::LZ) = linear_z;
-	desired_state_.base_acc(dwl::rbd::AX) = angular_x;
-	desired_state_.base_acc(dwl::rbd::AY) = angular_y;
-	desired_state_.base_acc(dwl::rbd::AZ) = angular_z;
+		// Reading desired base positions
+		privated_node_.param("desired_state/position/" + name, value, 0.0);
+		desired_state_.base_pos(coord) = value;
+
+		// Reading desired base velocities
+		privated_node_.param("desired_state/velocity/" + name, value, 0.0);
+		desired_state_.base_vel(coord) = value;
+
+		// Reading desired base accelerations
+		privated_node_.param("desired_state/acceleration/" + name, value, 0.0);
+		desired_state_.base_acc(coord) = value;
+
+		// Reading the weight value of the base positions
+		privated_node_.param("integral_cost/state_tracking_energy/position/base/" + name,
+				value, 0.0);
+		integral_weights.base_pos(coord) = value;
+		privated_node_.param("terminal_cost/state_tracking_energy/position/base/" + name,
+				value, 0.0);
+		terminal_weights.base_pos(coord) = value;
+
+
+		// Reading the weight value of the base velocities
+		privated_node_.param("integral_cost/state_tracking_energy/velocity/base/" + name,
+				value, 0.0);
+		integral_weights.base_vel(coord) = value;
+		privated_node_.param("terminal_cost/state_tracking_energy/velocity/base/" + name,
+				value, 0.0);
+		terminal_weights.base_vel(coord) = value;
+
+		// Reading the weight value of the base accelerations
+		privated_node_.param("integral_cost/state_tracking_energy/acceleration/base/" + name,
+				value, 0.0);
+		integral_weights.base_acc(coord) = value;
+		privated_node_.param("terminal_cost/state_tracking_energy/acceleration/base/" + name,
+				value, 0.0);
+		terminal_weights.base_acc(coord) = value;
+	}
+
+	// Reading joint information
+	for (dwl::urdf_model::JointID::const_iterator jnt_it = system.getJoints().begin();
+			jnt_it != system.getJoints().end(); jnt_it++) {
+		unsigned int joint_idx =  jnt_it->second - system.getFloatingBaseDoF();
+		std::string joint_name = jnt_it->first;
+		double value;
+
+		// Reading the weight value of the joint positions
+		if (!privated_node_.getParam("integral_cost/state_tracking_energy/position/joints/" +
+				joint_name, value))
+			ROS_WARN("The position weight of integral cost in %s joint is not defined", joint_name.c_str());
+		else
+			integral_weights.joint_pos(joint_idx) = value;
+		if (!privated_node_.getParam("terminal_cost/state_tracking_energy/position/joints/" +
+				joint_name, value))
+			ROS_WARN("The position weight of terminal cost in %s joint is not defined", joint_name.c_str());
+		else
+			terminal_weights.joint_pos(joint_idx) = value;
+
+		// Reading the weight value of the joint velocities
+		if (!privated_node_.getParam("integral_cost/state_tracking_energy/velocity/joints/" +
+				joint_name, value))
+			ROS_WARN("The velocity weight of integral cost in %s joint is not defined", joint_name.c_str());
+		else
+			integral_weights.joint_vel(joint_idx) = value;
+		if (!privated_node_.getParam("terminal_cost/state_tracking_energy/velocity/joints/" +
+				joint_name, value))
+			ROS_WARN("The velocity weight of terminal cost in %s joint is not defined", joint_name.c_str());
+		else
+			terminal_weights.joint_vel(joint_idx) = value;
+
+		// Reading the weight value of the joint accelerations
+		if (!privated_node_.getParam("integral_cost/state_tracking_energy/acceleration/joints/" +
+				joint_name, value))
+			ROS_WARN("The acceleration weight of integral cost in %s joint is not defined", joint_name.c_str());
+		else
+			integral_weights.joint_acc(joint_idx) = value;
+		if (!privated_node_.getParam("terminal_cost/state_tracking_energy/acceleration/joints/" +
+				joint_name, value))
+			ROS_WARN("The acceleration weight of terminal cost in %s joint is not defined", joint_name.c_str());
+		else
+			terminal_weights.joint_acc(joint_idx) = value;
+
+		// Control weights
+		if (!privated_node_.getParam("integral_cost/control_energy/" + joint_name, value))
+			ROS_WARN("The control weight of integral const in %s joint is not defined", joint_name.c_str());
+		else
+			integral_weights.joint_eff(joint_idx) = value;
+	}
 
 
 	// Reading the dynamical constraint configuration parameters
@@ -110,97 +166,18 @@ void ModeInvariantWholeBodyPlanner::init()
 	planning_.setStepIntegrationTime(step_time);
 
 
-	// Reading the cost weights
-	dwl::LocomotionState weights(system.getJointDoF());
-
-	// Base position weights
-	privated_node_.param("cost/state_tracking_energy/position/base/LX", linear_x, 0.0);
-	privated_node_.param("cost/state_tracking_energy/position/base/LY", linear_y, 0.0);
-	privated_node_.param("cost/state_tracking_energy/position/base/LZ", linear_z, 0.0);
-	privated_node_.param("cost/state_tracking_energy/position/base/AX", angular_x, 0.0);
-	privated_node_.param("cost/state_tracking_energy/position/base/AY", angular_y, 0.0);
-	privated_node_.param("cost/state_tracking_energy/position/base/AZ", angular_z, 0.0);
-	weights.base_pos(dwl::rbd::LX) = linear_x;
-	weights.base_pos(dwl::rbd::LY) = linear_y;
-	weights.base_pos(dwl::rbd::LZ) = linear_z;
-	weights.base_pos(dwl::rbd::AX) = angular_x;
-	weights.base_pos(dwl::rbd::AY) = angular_y;
-	weights.base_pos(dwl::rbd::AZ) = angular_z;
-
-	// Base velocity weights
-	privated_node_.param("cost/state_tracking_energy/velocity/base/LX", linear_x, 0.0);
-	privated_node_.param("cost/state_tracking_energy/velocity/base/LY", linear_y, 0.0);
-	privated_node_.param("cost/state_tracking_energy/velocity/base/LZ", linear_z, 0.0);
-	privated_node_.param("cost/state_tracking_energy/velocity/base/AX", angular_x, 0.0);
-	privated_node_.param("cost/state_tracking_energy/velocity/base/AY", angular_y, 0.0);
-	privated_node_.param("cost/state_tracking_energy/velocity/base/AZ", angular_z, 0.0);
-	weights.base_vel(dwl::rbd::LX) = linear_x;
-	weights.base_vel(dwl::rbd::LY) = linear_y;
-	weights.base_vel(dwl::rbd::LZ) = linear_z;
-	weights.base_vel(dwl::rbd::AX) = angular_x;
-	weights.base_vel(dwl::rbd::AY) = angular_y;
-	weights.base_vel(dwl::rbd::AZ) = angular_z;
-
-	// Base acceleration weights
-	privated_node_.param("cost/state_tracking_energy/acceleration/base/LX", linear_x, 0.0);
-	privated_node_.param("cost/state_tracking_energy/acceleration/base/LY", linear_y, 0.0);
-	privated_node_.param("cost/state_tracking_energy/acceleration/base/LZ", linear_z, 0.0);
-	privated_node_.param("cost/state_tracking_energy/acceleration/base/AX", angular_x, 0.0);
-	privated_node_.param("cost/state_tracking_energy/acceleration/base/AY", angular_y, 0.0);
-	privated_node_.param("cost/state_tracking_energy/acceleration/base/AZ", angular_z, 0.0);
-	weights.base_acc(dwl::rbd::LX) = linear_x;
-	weights.base_acc(dwl::rbd::LY) = linear_y;
-	weights.base_acc(dwl::rbd::LZ) = linear_z;
-	weights.base_acc(dwl::rbd::AX) = angular_x;
-	weights.base_acc(dwl::rbd::AY) = angular_y;
-	weights.base_acc(dwl::rbd::AZ) = angular_z;
-
-
-	// Joint weights
-	for (dwl::urdf_model::JointID::const_iterator jnt_it = system.getJoints().begin();
-			jnt_it != system.getJoints().end(); jnt_it++) {
-		unsigned int joint_idx =  jnt_it->second - system.getFloatingBaseDoF();
-		std::string joint_name = jnt_it->first;
-		double weight_value;
-
-		// Position weights
-		if (!privated_node_.getParam("cost/state_tracking_energy/position/joints/" + joint_name,
-				weight_value))
-			ROS_WARN("The position weight of the %s joint is not defined", joint_name.c_str());
-		else
-			weights.joint_pos(joint_idx) = weight_value;
-
-		// Velocity weights
-		if (!privated_node_.getParam("cost/state_tracking_energy/velocity/joints/" + joint_name,
-				weight_value))
-			ROS_WARN("The velocity weight of the %s joint is not defined", joint_name.c_str());
-		else
-			weights.joint_vel(joint_idx) = weight_value;
-
-		// Acceleration weights
-		if (!privated_node_.getParam("cost/state_tracking_energy/acceleration/joints/" + joint_name,
-				weight_value))
-			ROS_WARN("The acceleration weight of the %s joint is not defined", joint_name.c_str());
-		else
-			weights.joint_acc(joint_idx) = weight_value;
-
-		// Control weights
-		if (!privated_node_.getParam("cost/control_energy/" + joint_name, weight_value))
-			ROS_WARN("The control weight of the %s joint is not defined", joint_name.c_str());
-		else
-			weights.joint_eff(joint_idx) = weight_value;
-	}
-
 	// Setting the cost functions
-	dwl::model::Cost* state_tracking_cost = new dwl::model::IntegralStateTrackingEnergyCost();
-	state_tracking_cost->setWeights(weights);
-	dwl::model::Cost* control_cost = new dwl::model::IntegralControlEnergyCost();
-	control_cost->setWeights(weights);
-
+	dwl::model::Cost* integral_state_tracking_cost = new dwl::model::IntegralStateTrackingEnergyCost();
+	integral_state_tracking_cost->setWeights(integral_weights);
+	dwl::model::Cost* terminal_state_tracking_cost = new dwl::model::TerminalStateTrackingEnergyCost();
+	terminal_state_tracking_cost->setWeights(terminal_weights);
+	dwl::model::Cost* integral_control_cost = new dwl::model::IntegralControlEnergyCost();
+	integral_control_cost->setWeights(integral_weights);
 
 	// Adding the cost functions
-	planning_.addCost(state_tracking_cost);
-	planning_.addCost(control_cost);
+	planning_.addCost(integral_state_tracking_cost);
+	planning_.addCost(terminal_state_tracking_cost);
+	planning_.addCost(integral_control_cost);
 
 
 	// Reading the interpolation time
