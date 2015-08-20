@@ -10,7 +10,7 @@ mode_invariant_whole_body_planner:
     # Time integration configuration
     time_integration:
       type: fixed
-      step_time: 0.1
+      step_time: 0.0125
       method: EulerBackward
   
   # Defines the cost weights used by the cost functions implemented in the optimizer
@@ -38,4 +38,4 @@ mode_invariant_whole_body_planner:
   horizon: 10
   # The maximum allowed computation time for optimization solver in seconds
   # The default computation time is infinity.
-  computation_time: 10
+  computation_time: 200
