@@ -45,14 +45,28 @@ void ConstrainedWholeBodyPlanner::init()
 	dwl::model::ConstrainedDynamicalSystem* system_constraint = new dwl::model::ConstrainedDynamicalSystem();
 	dwl::model::DynamicalSystem* dynamical_system = system_constraint;
 
+	// Setting the active contacts. TODO makes this configuration externally
 	dwl::rbd::BodySelector active_contact;
 	active_contact.push_back("foot");
 	system_constraint->setActiveEndEffectors(active_contact);
 	dynamical_system->modelFromURDFFile(model_file, true);
 
+	// Reading and setting the integration method of dynamical constraint
+	std::string integration_method;
+	privated_node_.param<std::string>("dynamical_system/time_integration/type", integration_method, "fixed");
+	if (integration_method == "variable")
+		dynamical_system->setStepIntegrationMethod(dwl::model::Variable);
+	else
+		dynamical_system->setStepIntegrationMethod(dwl::model::Fixed);
+
 	// Adding the dynamical system
 	planning_.addDynamicalSystem(dynamical_system);
 	dwl::model::FloatingBaseSystem system = planning_.getDynamicalSystem()->getFloatingBaseSystem();
+
+	// Reading and setting the time integration step
+	double step_time;
+	privated_node_.param("dynamical_system/time_integration/step_time", step_time, 0.1);
+	planning_.setStepIntegrationTime(step_time);
 
 
 	// Initializing the desired state, integral and terminal cost weights
@@ -154,13 +168,6 @@ void ConstrainedWholeBodyPlanner::init()
 		else
 			integral_weights.joint_eff(joint_idx) = value;
 	}
-
-
-	// Reading the dynamical constraint configuration parameters
-	double step_time;
-	privated_node_.param("dynamical_system/time_integration/step_time", step_time, 0.1);
-	planning_.setStepIntegrationTime(step_time);
-
 
 	// Setting the cost functions
 	dwl::model::Cost* integral_state_tracking_cost = new dwl::model::IntegralStateTrackingEnergyCost();

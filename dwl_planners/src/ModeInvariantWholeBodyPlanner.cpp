@@ -15,6 +15,9 @@ ModeInvariantWholeBodyPlanner::ModeInvariantWholeBodyPlanner(ros::NodeHandle nod
 	current_state_.joint_eff = Eigen::VectorXd::Zero(2);
 	current_state_.joint_eff << 9.33031, 27.6003;
 	current_state_.contacts.resize(1);
+	current_state_.contacts[0].position = Eigen::Vector3d::Zero();
+	current_state_.contacts[0].velocity = Eigen::Vector3d::Zero();
+	current_state_.contacts[0].acceleration = Eigen::Vector3d::Zero();
 	current_state_.contacts[0].force << 0., 0., 106.555;//Eigen::Vector3d::Zero();
 }
 
@@ -45,9 +48,23 @@ void ModeInvariantWholeBodyPlanner::init()
 
 	dynamical_system->modelFromURDFFile(model_file, true);
 
+	// Reading and setting the integration method of dynamical constraint
+	std::string integration_method;
+	privated_node_.param<std::string>("dynamical_system/time_integration/type", integration_method, "fixed");
+	if (integration_method == "variable")
+		dynamical_system->setStepIntegrationMethod(dwl::model::Variable);
+	else
+		dynamical_system->setStepIntegrationMethod(dwl::model::Fixed);
+
 	// Adding the dynamical system
 	planning_.addDynamicalSystem(dynamical_system);
 	dwl::model::FloatingBaseSystem system = planning_.getDynamicalSystem()->getFloatingBaseSystem();
+
+	// Reading and setting the time integration step
+	double step_time;
+	privated_node_.param("dynamical_system/time_integration/step_time", step_time, 0.1);
+	planning_.setStepIntegrationTime(step_time);
+
 
 	// Adding the contact model constraint
 	dwl::model::InelasticContactModelConstraint* contact_constraint = new dwl::model::InelasticContactModelConstraint();
@@ -158,13 +175,6 @@ void ModeInvariantWholeBodyPlanner::init()
 		else
 			integral_weights.joint_eff(joint_idx) = value;
 	}
-
-
-	// Reading the dynamical constraint configuration parameters
-	double step_time;
-	privated_node_.param("dynamical_system/time_integration/step_time", step_time, 0.1);
-	planning_.setStepIntegrationTime(step_time);
-
 
 	// Setting the cost functions
 	dwl::model::Cost* integral_state_tracking_cost = new dwl::model::IntegralStateTrackingEnergyCost();
@@ -365,7 +375,7 @@ int main(int argc, char **argv)
 		while (ros::ok()) {
 			if (planner.compute()) {
 				planner.publishWholeBodyTrajectory();
-//				return 0;
+				return 0;
 			}
 			ros::spinOnce();
 			loop_rate.sleep();
