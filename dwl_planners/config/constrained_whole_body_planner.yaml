@@ -7,9 +7,10 @@ constrained_whole_body_planner:
   
   # Defines the constrained dynamical constraint properties
   dynamical_system:
+    full_trajectory_optimization: false
     # Time integration configuration
     time_integration:
-      type: fixed
+      type: fixed #fixed or variable
       step_time: 0.1
       method: EulerBackward
   

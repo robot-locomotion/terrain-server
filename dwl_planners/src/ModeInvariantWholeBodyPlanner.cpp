@@ -56,6 +56,12 @@ void ModeInvariantWholeBodyPlanner::init()
 	else
 		dynamical_system->setStepIntegrationMethod(dwl::model::Fixed);
 
+	// Reading the full-trajectory parameter
+	bool full_trajectory_opt;
+	privated_node_.param("dynamical_system/full_trajectory_optimization", full_trajectory_opt, false);
+	if (full_trajectory_opt)
+		dynamical_system->setFullTrajectoryOptimization();
+
 	// Adding the dynamical system
 	planning_.addDynamicalSystem(dynamical_system);
 	dwl::model::FloatingBaseSystem system = planning_.getDynamicalSystem()->getFloatingBaseSystem();
