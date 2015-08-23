@@ -351,6 +351,54 @@ void ConstrainedWholeBodyPlanner::jointStateCallback(const sensor_msgs::JointSta
 		}
 	}
 
+	// Computing and filling the contact information
+	dwl::model::DynamicalSystem* dynamical_system = planning_.getDynamicalSystem();
+	current_state_.contacts.resize(dynamical_system->getFloatingBaseSystem().getNumberOfEndEffectors());
+
+	// Getting the contact names
+	dwl::urdf_model::LinkID contacts = dynamical_system->getFloatingBaseSystem().getEndEffectors();
+	dwl::rbd::BodySelector contact_names;
+	for (dwl::urdf_model::LinkID::const_iterator contact_it = contacts.begin();
+			contact_it != contacts.end(); contact_it++) {
+		// Getting and setting the end-effector names
+		std::string name = contact_it->first;
+		contact_names.push_back(name);
+	}
+
+	// Computing the contact positions
+	dwl::rbd::BodyVector contact_pos;
+	dynamical_system->getKinematics().computeForwardKinematics(contact_pos,
+															   current_state_.base_pos,
+															   current_state_.joint_pos,
+															   contact_names, dwl::rbd::Linear);
+	for (unsigned int k = 0; k < contact_names.size(); k++)
+		current_state_.contacts[k].position = contact_pos.find(contact_names[k])->second;
+
+	// Computing the contact velocities
+	dwl::rbd::BodyVector contact_vel;
+	dynamical_system->getKinematics().computeVelocity(contact_vel,
+													  current_state_.base_pos,
+													  current_state_.joint_pos,
+													  current_state_.base_vel,
+													  current_state_.joint_vel,
+													  contact_names, dwl::rbd::Linear);
+	for (unsigned int k = 0; k < contact_names.size(); k++)
+		current_state_.contacts[k].velocity = contact_vel.find(contact_names[k])->second;
+
+	// Computing the contact accelerations
+	dwl::rbd::BodyVector contact_acc;
+	dynamical_system->getKinematics().computeAcceleration(contact_acc,
+														  current_state_.base_pos,
+														  current_state_.joint_pos,
+														  current_state_.base_vel,
+														  current_state_.joint_vel,
+														  current_state_.base_acc,
+														  current_state_.joint_acc,
+														  contact_names, dwl::rbd::Linear);
+	for (unsigned int k = 0; k < contact_names.size(); k++)
+		current_state_.contacts[k].acceleration = contact_acc.find(contact_names[k])->second;
+
+
 	new_current_state_ = true;
 }
 
