@@ -5,6 +5,7 @@ namespace dwl_planners
 {
 
 ModeInvariantWholeBodyPlanner::ModeInvariantWholeBodyPlanner(ros::NodeHandle node) : privated_node_(node),
+		simplified_dynamical_system_(NULL), full_dynamical_system_(NULL),
 		interpolation_time_(0.), computation_time_(0.), new_current_state_(true)//(false)
 {
 //	current_state_.base_pos(dwl::rbd::LZ) = 0.2;
@@ -24,13 +25,14 @@ ModeInvariantWholeBodyPlanner::ModeInvariantWholeBodyPlanner(ros::NodeHandle nod
 
 ModeInvariantWholeBodyPlanner::~ModeInvariantWholeBodyPlanner()
 {
-
+	delete simplified_dynamical_system_;
+	delete full_dynamical_system_;
 }
 
 
 void ModeInvariantWholeBodyPlanner::init()
 {
-	// Setting publishers and subscribers
+	// Setting up publishers and subscribers
 	motion_plan_pub_ = node_.advertise<dwl_msgs::WholeBodyTrajectory>("/hyl/constrained_operational_controller/plan", 1);
 	robot_state_sub_ = node_.subscribe<sensor_msgs::JointState>("/hyl/joint_states", 1,
 			&ModeInvariantWholeBodyPlanner::jointStateCallback, this);
@@ -40,54 +42,198 @@ void ModeInvariantWholeBodyPlanner::init()
 	dwl::solver::OptimizationSolver* solver = ipopt_solver;
 	planning_.init(solver);
 
+	// Initializing the dynamical constraints
+	std::string filename = "/home/cmastalli/ros_workspace/src/dwl/thirdparty/rbdl/hyl.urdf";
+	initDynamicalConstraints(filename);
 
-	// Initializing the dynamical system constraint
-	std::string model_file = "/home/cmastalli/ros_workspace/src/dwl/thirdparty/rbdl/hyl.urdf";
-	dwl::model::FullDynamicalSystem* system_constraint = new dwl::model::FullDynamicalSystem();
-	dwl::model::DynamicalSystem* dynamical_system = system_constraint;
+	// Initializing constraints
+	initConstraints(filename);
 
-	dynamical_system->modelFromURDFFile(model_file, true);
+	// Initializing the desired state
+	initDesiredState();
+
+	// Initializing the cost functions
+	initCosts();
+
+	// Reading the interpolation time
+	privated_node_.param("interpolation_time", interpolation_time_, -1.);
+
+	// Reading and setting the horizon value
+	int horizon;
+	privated_node_.param("horizon", horizon, 1);
+	planning_.setHorizon(horizon);
+
+	// Reading the allowed computation time
+	privated_node_.param("computation_time", computation_time_, std::numeric_limits<double>::max());
+}
+
+
+bool ModeInvariantWholeBodyPlanner::compute()
+{
+	if (new_current_state_) {
+		new_current_state_ = false;
+
+		if (type_of_dynamical_system_ == "Hierarchical") {
+			// Planning with the simplified model
+			planning_.compute(current_state_, desired_state_, computation_time_);
+
+			// Removing the simplified model
+			planning_.removeDynamicalSystem();
+
+			// Adding the full dynamical model
+			planning_.addDynamicalSystem(full_dynamical_system_);
+		}
+
+		return planning_.compute(current_state_, desired_state_, computation_time_);
+	} else
+		return false;
+}
+
+
+void ModeInvariantWholeBodyPlanner::publishWholeBodyTrajectory()
+{
+	// Publishing the motion plan if there is at least one subscriber
+	if (motion_plan_pub_.getNumSubscribers() > 0) {
+		robot_trajectory_msg_.header.stamp = ros::Time::now();
+
+		// Filling the current state
+		writeWholeBodyStateMessage(robot_trajectory_msg_.actual,
+								   current_state_);
+
+		// Filling the trajectory message
+		dwl::locomotion::LocomotionTrajectory trajectory;
+		if (interpolation_time_ <= 0.)
+			trajectory = planning_.getWholeBodyTrajectory();
+		else
+			trajectory = planning_.getInterpolatedWholeBodyTrajectory(interpolation_time_);
+
+		robot_trajectory_msg_.trajectory.resize(trajectory.size());
+		for (unsigned int i = 0; i < trajectory.size(); i++)
+			writeWholeBodyStateMessage(robot_trajectory_msg_.trajectory[i], trajectory[i]);
+
+		// Publishing the motion plan
+		motion_plan_pub_.publish(robot_trajectory_msg_);
+	}
+}
+
+
+void ModeInvariantWholeBodyPlanner::initDynamicalConstraints(std::string filename)
+{
+	// Reading the full-trajectory parameter
+	bool full_trajectory_opt;
+	privated_node_.param("dynamical_system/full_trajectory_optimization", full_trajectory_opt, false);
 
 	// Reading and setting the integration method of dynamical constraint
 	std::string integration_method;
 	privated_node_.param<std::string>("dynamical_system/time_integration/type", integration_method, "fixed");
-	if (integration_method == "variable")
-		dynamical_system->setStepIntegrationMethod(dwl::model::Variable);
-	else
-		dynamical_system->setStepIntegrationMethod(dwl::model::Fixed);
 
-	// Reading the full-trajectory parameter
-	bool full_trajectory_opt;
-	privated_node_.param("dynamical_system/full_trajectory_optimization", full_trajectory_opt, false);
-	if (full_trajectory_opt)
-		dynamical_system->setFullTrajectoryOptimization();
-
-	// Adding the dynamical system
-	planning_.addDynamicalSystem(dynamical_system);
-	dwl::model::FloatingBaseSystem system = planning_.getDynamicalSystem()->getFloatingBaseSystem();
-
-	// Reading and setting the time integration step
+	// Reading the time integration step
 	double step_time;
 	privated_node_.param("dynamical_system/time_integration/step_time", step_time, 0.1);
-	planning_.setStepIntegrationTime(step_time);
+
+	// Setting the dynamical constraints properties
+	privated_node_.param<std::string>("dynamical_system/type", type_of_dynamical_system_, "Full");
+	if (type_of_dynamical_system_ == "Hierarchical") {
+		simplified_dynamical_system_ = new dwl::model::CentroidalDynamicalSystem();
+		full_dynamical_system_ = new dwl::model::FullDynamicalSystem();
+
+		// Initializing the model of both dynamical systems
+		simplified_dynamical_system_->modelFromURDFFile(filename);
+		full_dynamical_system_->modelFromURDFFile(filename);
+
+		// Setting the trajectory optimization problem
+		if (full_trajectory_opt) {
+			simplified_dynamical_system_->setFullTrajectoryOptimization();
+			full_dynamical_system_->setFullTrajectoryOptimization();
+		}
+
+		// Setting the integration method
+		if (integration_method == "variable") {
+			simplified_dynamical_system_->setStepIntegrationMethod(dwl::model::Variable);
+			full_dynamical_system_->setStepIntegrationMethod(dwl::model::Variable);
+		} else {
+			simplified_dynamical_system_->setStepIntegrationMethod(dwl::model::Fixed);
+			full_dynamical_system_->setStepIntegrationMethod(dwl::model::Fixed);
+		}
+
+		// Setting the time integration step
+		simplified_dynamical_system_->setStepIntegrationTime(step_time);
+		full_dynamical_system_->setStepIntegrationTime(step_time);
+
+		// Adding the simplified dynamical systems
+		planning_.addDynamicalSystem(simplified_dynamical_system_);
+	} else if (type_of_dynamical_system_ == "Simplified") {
+		simplified_dynamical_system_ = new dwl::model::CentroidalDynamicalSystem();
+
+		// Initializing the model of simplified dynamical systems
+		simplified_dynamical_system_->modelFromURDFFile(filename);
+
+		// Setting the trajectory optimization problem
+		if (full_trajectory_opt)
+			simplified_dynamical_system_->setFullTrajectoryOptimization();
+
+		// Setting the integration method
+		if (integration_method == "variable")
+			simplified_dynamical_system_->setStepIntegrationMethod(dwl::model::Variable);
+		else
+			simplified_dynamical_system_->setStepIntegrationMethod(dwl::model::Fixed);
+
+		// Setting the time integration step
+		simplified_dynamical_system_->setStepIntegrationTime(step_time);
+
+		// Adding the simplified dynamical systems
+		planning_.addDynamicalSystem(simplified_dynamical_system_);
+	} else {
+		full_dynamical_system_ = new dwl::model::FullDynamicalSystem();
+
+		// Initializing the model of simplified dynamical systems
+		full_dynamical_system_->modelFromURDFFile(filename);
+
+		// Setting the trajectory optimization problem
+		if (full_trajectory_opt)
+			full_dynamical_system_->setFullTrajectoryOptimization();
+
+		// Setting the integration method
+		if (integration_method == "variable")
+			full_dynamical_system_->setStepIntegrationMethod(dwl::model::Variable);
+		else
+			full_dynamical_system_->setStepIntegrationMethod(dwl::model::Fixed);
+
+		// Setting the time integration step
+		full_dynamical_system_->setStepIntegrationTime(step_time);
+
+		// Adding the simplified dynamical systems
+		planning_.addDynamicalSystem(full_dynamical_system_);
+	}
+}
 
 
-	// Adding the contact model constraint
-	dwl::model::InelasticContactModelConstraint* contact_constraint = new dwl::model::InelasticContactModelConstraint();
-	contact_constraint->modelFromURDFFile(model_file);
+void ModeInvariantWholeBodyPlanner::initConstraints(std::string filename)
+{
+	// Adding the contact detection constraint
+	dwl::model::InelasticContactModelConstraint* contact_constraint =
+			new dwl::model::InelasticContactModelConstraint();
+	contact_constraint->modelFromURDFFile(filename);
 	planning_.addConstraint(contact_constraint);
 
-	dwl::model::InelasticContactVelocityConstraint* contact_vel_constraint = new dwl::model::InelasticContactVelocityConstraint();
-	contact_vel_constraint->modelFromURDFFile(model_file);
+	// Adding the contact displacement constraint
+	dwl::model::InelasticContactVelocityConstraint* contact_vel_constraint =
+			new dwl::model::InelasticContactVelocityConstraint();
+	contact_vel_constraint->modelFromURDFFile(filename);
 	planning_.addConstraint(contact_vel_constraint);
+}
 
 
-	// Initializing the desired state, integral and terminal cost weights
+void ModeInvariantWholeBodyPlanner::initDesiredState()
+{
+	// Getting the floating-base system information
+	dwl::model::FloatingBaseSystem system = planning_.getDynamicalSystem()->getFloatingBaseSystem();
+
+	// Initializing the desired state
 	desired_state_.setJointDoF(system.getJointDoF());
-	dwl::LocomotionState integral_weights(system.getJointDoF());
-	dwl::LocomotionState terminal_weights(system.getJointDoF());
 
-	// Reading base information
+
+	// Reading base desired state
 	const char* base_names[] = {"AX", "AY", "AZ", "LX", "LY", "LZ"};
 	for (unsigned int coord_idx = 0; coord_idx < 6; coord_idx++) {
 		dwl::rbd::Coords6d coord = dwl::rbd::Coords6d(coord_idx);
@@ -95,16 +241,55 @@ void ModeInvariantWholeBodyPlanner::init()
 		double value;
 
 		// Reading desired base positions
-		privated_node_.param("desired_state/position/" + name, value, 0.0);
+		privated_node_.param("desired_state/position/base/" + name, value, 0.0);
 		desired_state_.base_pos(coord) = value;
 
 		// Reading desired base velocities
-		privated_node_.param("desired_state/velocity/" + name, value, 0.0);
+		privated_node_.param("desired_state/velocity/base/" + name, value, 0.0);
 		desired_state_.base_vel(coord) = value;
 
 		// Reading desired base accelerations
-		privated_node_.param("desired_state/acceleration/" + name, value, 0.0);
+		privated_node_.param("desired_state/acceleration/base/" + name, value, 0.0);
 		desired_state_.base_acc(coord) = value;
+	}
+
+	// Reading joint desired state
+	for (dwl::urdf_model::JointID::const_iterator jnt_it = system.getJoints().begin();
+			jnt_it != system.getJoints().end(); jnt_it++) {
+		unsigned int joint_idx =  jnt_it->second - system.getFloatingBaseDoF();
+		std::string joint_name = jnt_it->first;
+		double value;
+
+		// Reading desired joint positions
+		privated_node_.param("desired_state/position/joints/" + joint_name, value, 0.0);
+		desired_state_.joint_pos(joint_idx) = value;
+
+		// Reading desired joint velocities
+		privated_node_.param("desired_state/velocity/joints/" + joint_name, value, 0.0);
+		desired_state_.joint_vel(joint_idx) = value;
+
+		// Reading desired joint accelerations
+		privated_node_.param("desired_state/acceleration/joints/" + joint_name, value, 0.0);
+		desired_state_.joint_acc(joint_idx) = value;
+	}
+}
+
+
+void ModeInvariantWholeBodyPlanner::initCosts()
+{
+	// Getting the floating-base system information
+	dwl::model::FloatingBaseSystem system = planning_.getDynamicalSystem()->getFloatingBaseSystem();
+
+	// Initializing the integral and terminal cost weights
+	dwl::LocomotionState integral_weights(system.getJointDoF());
+	dwl::LocomotionState terminal_weights(system.getJointDoF());
+
+	// Reading base weights
+	const char* base_names[] = {"AX", "AY", "AZ", "LX", "LY", "LZ"};
+	for (unsigned int coord_idx = 0; coord_idx < 6; coord_idx++) {
+		dwl::rbd::Coords6d coord = dwl::rbd::Coords6d(coord_idx);
+		std::string name = base_names[coord_idx];
+		double value;
 
 		// Reading the weight value of the base positions
 		privated_node_.param("integral_cost/state_tracking_energy/position/base/" + name,
@@ -113,7 +298,6 @@ void ModeInvariantWholeBodyPlanner::init()
 		privated_node_.param("terminal_cost/state_tracking_energy/position/base/" + name,
 				value, 0.0);
 		terminal_weights.base_pos(coord) = value;
-
 
 		// Reading the weight value of the base velocities
 		privated_node_.param("integral_cost/state_tracking_energy/velocity/base/" + name,
@@ -132,7 +316,7 @@ void ModeInvariantWholeBodyPlanner::init()
 		terminal_weights.base_acc(coord) = value;
 	}
 
-	// Reading joint information
+	// Reading joint weights
 	for (dwl::urdf_model::JointID::const_iterator jnt_it = system.getJoints().begin();
 			jnt_it != system.getJoints().end(); jnt_it++) {
 		unsigned int joint_idx =  jnt_it->second - system.getFloatingBaseDoF();
@@ -194,57 +378,7 @@ void ModeInvariantWholeBodyPlanner::init()
 	planning_.addCost(integral_state_tracking_cost);
 	planning_.addCost(terminal_state_tracking_cost);
 	planning_.addCost(integral_control_cost);
-
-
-	// Reading the interpolation time
-	privated_node_.param("interpolation_time", interpolation_time_, -1.);
-
-	// Reading and setting the horizon value
-	int horizon;
-	privated_node_.param("horizon", horizon, 1);
-	planning_.setHorizon(horizon);
-
-	// Reading the allowed computation time
-	privated_node_.param("computation_time", computation_time_, std::numeric_limits<double>::max());
 }
-
-
-bool ModeInvariantWholeBodyPlanner::compute()
-{
-	if (new_current_state_) {
-		new_current_state_ = false;
-		return planning_.compute(current_state_, desired_state_, computation_time_);
-	} else
-		return false;
-}
-
-
-void ModeInvariantWholeBodyPlanner::publishWholeBodyTrajectory()
-{
-	// Publishing the motion plan if there is at least one subscriber
-	if (motion_plan_pub_.getNumSubscribers() > 0) {
-		robot_trajectory_msg_.header.stamp = ros::Time::now();
-
-		// Filling the current state
-		writeWholeBodyStateMessage(robot_trajectory_msg_.actual,
-								   current_state_);
-
-		// Filling the trajectory message
-		dwl::locomotion::LocomotionTrajectory trajectory;
-		if (interpolation_time_ <= 0.)
-			trajectory = planning_.getWholeBodyTrajectory();
-		else
-			trajectory = planning_.getInterpolatedWholeBodyTrajectory(interpolation_time_);
-
-		robot_trajectory_msg_.trajectory.resize(trajectory.size());
-		for (unsigned int i = 0; i < trajectory.size(); i++)
-			writeWholeBodyStateMessage(robot_trajectory_msg_.trajectory[i], trajectory[i]);
-
-		// Publishing the motion plan
-		motion_plan_pub_.publish(robot_trajectory_msg_);
-	}
-}
-
 
 
 void ModeInvariantWholeBodyPlanner::writeWholeBodyStateMessage(dwl_msgs::WholeBodyState& msg,

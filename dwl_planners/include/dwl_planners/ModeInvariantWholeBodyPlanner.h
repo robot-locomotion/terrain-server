@@ -6,6 +6,7 @@
 // Locomotion headers
 #include <locomotion/WholeBodyTrajectoryOptimization.h>
 #include <model/FullDynamicalSystem.h>
+#include <model/CentroidalDynamicalSystem.h>
 #include <model/InelasticContactModelConstraint.h>
 #include <model/InelasticContactVelocityConstraint.h>
 #include <model/TerminalStateTrackingEnergyCost.h>
@@ -42,6 +43,24 @@ class ModeInvariantWholeBodyPlanner
 
 	private:
 		/**
+		 * @brief Initializes the dynamical system constraints
+		 * @param std::string Filename of the URDF model
+		 */
+		void initDynamicalConstraints(std::string filename);
+
+		/**
+		 * @brief Initializes the constraints
+		 * @param std::string Filename of the URDF model
+		 */
+		void initConstraints(std::string filename);
+
+		/** @brief Initializes the desired state */
+		void initDesiredState();
+
+		/** @brief Initializes the cost functions */
+		void initCosts();
+
+		/**
 		 * @brief Writes the whole-body state message from a locomotion state
 		 * @param dwl_msgs::WholeBodyState& Whole-body state message
 		 * @param const dwl::LocomotionState& Locomotion state
@@ -70,6 +89,15 @@ class ModeInvariantWholeBodyPlanner
 
 		/** @brief Whole-body trajectory optimization */
 		dwl::locomotion::WholeBodyTrajectoryOptimization planning_;
+
+		/** @brief Simplified dynamical system */
+		dwl::model::DynamicalSystem* simplified_dynamical_system_;
+
+		/** @brief Full dynamical system */
+		dwl::model::DynamicalSystem* full_dynamical_system_;
+
+		/** @brief Type of dynamical system */
+		std::string type_of_dynamical_system_;
 
 		/** @brief Current whole-body state */
 		dwl::LocomotionState current_state_;
