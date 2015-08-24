@@ -1,9 +1,15 @@
 constrained_whole_body_planner:
   # Defines the desired locomotion state
   desired_state:
-    position: {LX: 0., LY: 0., LZ: -0.15, AX: 0., AY: 0., AZ: 0.}
-    velocity: {LX: 0., LY: 0., LZ: 0., AX: 0., AY: 0., AZ: 0.}
-    acceleration: {LX: 0., LY: 0., LZ: 0., AX: 0., AY: 0., AZ: 0.}
+    position:
+      base: {LX: 0., LY: 0., LZ: -0.15, AX: 0., AY: 0., AZ: 0.}
+      joints: {hfe_joint: 0.6, kfe_joint: -1.5}
+    velocity:
+      base: {LX: 0., LY: 0., LZ: 0., AX: 0., AY: 0., AZ: 0.}
+      joints: {hfe_joint: 0., kfe_joint: 0.}
+    acceleration:
+      base: {LX: 0., LY: 0., LZ: 0., AX: 0., AY: 0., AZ: 0.}
+      joints: {hfe_joint: 0., kfe_joint: 0.}
   
   # Defines the constrained dynamical constraint properties
   dynamical_system:

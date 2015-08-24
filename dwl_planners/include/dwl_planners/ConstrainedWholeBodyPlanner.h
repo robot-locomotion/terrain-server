@@ -40,6 +40,18 @@ class ConstrainedWholeBodyPlanner
 
 	private:
 		/**
+		 * @brief Initializes the dynamical system constraints
+		 * @param std::string Filename of the URDF model
+		 */
+		void initDynamicalConstraints(std::string filename);
+
+		/** @brief Initializes the desired state */
+		void initDesiredState();
+
+		/** @brief Initializes the cost functions */
+		void initCosts();
+
+		/**
 		 * @brief Writes the whole-body state message from a locomotion state
 		 * @param dwl_msgs::WholeBodyState& Whole-body state message
 		 * @param const dwl::LocomotionState& Locomotion state
