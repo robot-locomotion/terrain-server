@@ -70,6 +70,61 @@ void ModeInvariantWholeBodyPlanner::init()
 
 bool ModeInvariantWholeBodyPlanner::compute()
 {
+	// TODO hard coding a nominal trajectory
+	std::vector<dwl::LocomotionState> nom_traj;
+	dwl::LocomotionState current_state(2,1);
+	current_state.duration = 0.1;
+	// 1
+	current_state.time = 0.1;
+	current_state.base_pos(dwl::rbd::LZ) = -0.0117982880661;
+	current_state.base_vel(dwl::rbd::LZ) = -0.117982880661;
+	current_state.joint_pos << 0.620598290531, -1.54906585111;
+	current_state.joint_vel << 0.205982905314, -0.490658511111;
+	current_state.contacts[0].position << 0.0687062736125, 0.13, -0.582715009885;
+	current_state.contacts[0].force << -33.3327717451, 2.19910468131e-09, 94.6053161311;
+	nom_traj.push_back(current_state);
+	// 2
+	current_state.time = 0.2;
+	current_state.base_pos(dwl::rbd::LZ) = 0.175822198623;
+	current_state.base_vel(dwl::rbd::LZ) = 1.87620486689;
+	current_state.joint_pos << 0.0706943272929, -0.349065850399;
+	current_state.joint_vel << -5.49903963239, 12.0;
+	current_state.contacts[0].position << 0.0687062736125, 0.13, -0.582715009885;
+	current_state.contacts[0].force << -33.1840702862, 7.27244855798e-09, 344.594877116;
+	nom_traj.push_back(current_state);
+	// 3
+	current_state.time = 0.3;
+	current_state.base_pos(dwl::rbd::LZ) = 0.246745947708;
+	current_state.base_vel(dwl::rbd::LZ) = 0.709237490855;
+	current_state.joint_pos << 0.620598290531, -1.54906585111;
+	current_state.joint_vel << 0.709237490855, -7.44600409691;
+	current_state.contacts[0].position << 0.0687062736125, 0.13, -0.502715009885;
+	current_state.contacts[0].force << -16.8628154585, 9.36056317494e-10, 1.01656933023e-07;
+	nom_traj.push_back(current_state);
+	// 4
+	current_state.time = 0.4;
+	current_state.base_pos(dwl::rbd::LZ) = 0.222272224855;
+	current_state.base_vel(dwl::rbd::LZ) = -0.24473722853;
+	current_state.joint_pos <<  0.388034041161, -1.42983410015;
+	current_state.joint_vel <<1.26868833858, -3.36167849929;
+	current_state.contacts[0].position << 0.161097516953, 0.13, -0.355793722729;//-0.402715009896;
+	current_state.contacts[0].force << -0.780765656612, 9.36056317494e-10, 1.01656933023e-07;
+	nom_traj.push_back(current_state);
+	// 5
+	current_state.time = 0.5;
+	current_state.base_pos(dwl::rbd::LZ) = 0.283422656988;
+	current_state.base_vel(dwl::rbd::LZ) = 0.611504321323;
+	current_state.joint_pos << 0.170798922223, -0.87678559778;
+	current_state.joint_vel << -2.17235118938, 5.53048502371;
+	current_state.contacts[0].position << 0.161097516953, 0.13, -0.402715009896;
+	current_state.contacts[0].force << -63.0045038101, 9.36056317494e-10, 198.291031531;
+	nom_traj.push_back(current_state);
+	planning_.setNominalTrajectory(nom_traj);
+
+
+
+
+
 	if (new_current_state_) {
 		new_current_state_ = false;
 
