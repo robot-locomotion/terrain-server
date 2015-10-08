@@ -1,0 +1,60 @@
+mode_invariant_whole_body_planner:
+  # Defines the desired locomotion state
+  desired_state:
+    position:
+      base: {LX: 0., LY: 0., LZ: 0.35, AX: 0., AY: 0., AZ: 0.}
+      joints: {hfe_joint: 0.6, kfe_joint: -1.5}
+    velocity:
+      base: {LX: 0., LY: 0., LZ: 0., AX: 0., AY: 0., AZ: 0.}
+      joints: {hfe_joint: 0., kfe_joint: 0.}
+    acceleration:
+      base: {LX: 0., LY: 0., LZ: 0., AX: 0., AY: 0., AZ: 0.}
+      joints: {hfe_joint: 0., kfe_joint: 0.}
+  
+  # Defines the constrained dynamical constraint properties
+  dynamical_system:
+    type: Hierarchical #Hierarchical/Full/Simplified
+    full_trajectory_optimization: false
+    # Time integration configuration
+    time_integration:
+      type: fixed #fixed or variable
+      step_time: 0.1
+      method: EulerBackward
+  
+  # Defines the cost weights used by the cost functions implemented in the optimizer
+  # Defaults values of the weights are 0.
+  terminal_cost:
+    state_tracking_energy:
+      position:
+        base: {LX: 0., LY: 0., LZ: 300., AX: 0., AY: 0., AZ: 0.}
+        joints: {hfe_joint: 10., kfe_joint: 10.}
+      velocity:
+        base: {LX: 0., LY: 0., LZ: 0., AX: 0., AY: 0., AZ: 0.}
+        joints: {hfe_joint: 0., kfe_joint: 0.}
+      acceleration:
+        base: {LX: 0., LY: 0., LZ: 0., AX: 0., AY: 0., AZ: 0.}  
+        joints: {hfe_joint: 0., kfe_joint: 0.}
+  integral_cost:
+    state_tracking_energy:
+      position:
+        base: {LX: 0., LY: 0., LZ: 1000., AX: 0., AY: 0., AZ: 0.}
+        joints: {hfe_joint: 0., kfe_joint: 0.}
+      velocity:
+        base: {LX: 0., LY: 0., LZ: 0., AX: 0., AY: 0., AZ: 0.}
+        joints: {hfe_joint: 0., kfe_joint: 0.}
+      acceleration:
+        base: {LX: 0., LY: 0., LZ: 0., AX: 0., AY: 0., AZ: 0.}  
+        joints: {hfe_joint: 0., kfe_joint: 0.}   
+    control_energy:
+      hfe_joint: 0.0001
+      kfe_joint: 0.0001
+  
+  # The interpolation time
+  # No interpolation rule is applied is the interpolation time is 0
+  interpolation_time: 0.005
+    
+  # The optimization horizon
+  horizon: 5
+  # The maximum allowed computation time for optimization solver in seconds
+  # The default computation time is infinity.
+  computation_time: 200

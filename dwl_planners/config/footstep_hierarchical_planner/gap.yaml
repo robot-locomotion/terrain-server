@@ -1,0 +1,42 @@
+footstep_hierarchical_planner:
+  # Defining the goal state
+  goal: {x: 1.7, y: 0.0, yaw: 0.0}
+  
+  # Defining the robot properties
+  robot:
+    properties: /home/cmastalli/ros_workspace/src/dwl_planners/config/hyq/properties.yaml
+    body_movement_primitives: /home/cmastalli/ros_workspace/src/dwl_planners/config/hyq/body_motor_primitives.yaml
+    
+  # Defining the body planner
+  body_planner:
+    type: SearchBasedBody
+    # There are several solver such as AnytimeRepairingAStar, AStar and Dijkstrap
+    # The default solver is the ARA*
+    path_solver: AnytimeRepairingAStar
+    ###### TODO: pose_solver:
+    # There are several adjacency model such as LatticeBasedBodyAdjacency and GridBasedBodyAdjacency
+    # The default adjacency model is LatticeBasedBody without body features
+    adjacency:
+      name: LatticeBasedBodyAdjacency
+      initial_inflation: 4
+      features:
+        potential_leg_collision: {enable: true, weight: 150, clearance: 0.04, collision: 0.2}
+        potential_body_orientation: {enable: true, weight: 50, max_roll: 30.0, max_pitch: 30.0} # degrees
+    # The maximum allowed computation time for path solver in seconds. Note that this time is used
+    # only in Anytime algorithms. The default computation time is 1 sec.
+    path_computation_time: 15
+    ###### TODO: pose_computation_time:
+    
+  contact_planner:
+    type: GreedyFootstep
+    remove_footholds: {enable: false, distance_threshold: 0.06}
+    features:
+      support_triangle: {enable: true, weight: 250, stable_inradii: 0.13, unstable_inradii: 0.08}
+      leg_collision: {enable: true, weight: 5000, clearance: 0.04, collision: 0.2}
+      body_orientation: {enable: false, weight: 150, max_roll: 30.0, max_pitch: 30.0} # degrees
+      kinematic_feasibility: {enable: true, weight: 200, kin_lim_x: 0.16, kin_lim_y: 0.08, stable_displacement: 0.08}
+    # The contact horizon; the zero value disable a horizon, i.e. it computes all the contact sequence
+    horizon: 0
+    # The maximum allowed computation time for contact solver in seconds
+    # The default computation time is 1 sec.
+    computation_time: 0.5

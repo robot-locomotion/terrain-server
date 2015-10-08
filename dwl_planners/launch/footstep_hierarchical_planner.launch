@@ -1,0 +1,27 @@
+<launch>
+
+	<!-- machine -->
+	<machine name="localhost" address="localhost" env-loader="/opt/ros/hydro/env.sh"/>
+	<arg name="machine" default="localhost" />
+  
+	<arg name="parameters" default="footstep_hierarchical_planner"/>
+	
+	<!-- load footstep hierarchical planner configurations from YAML file to parameter server -->
+	<rosparam file="$(find dwl_planners)/config/$(arg parameters).yaml" command="load"/>	
+
+	<node pkg="dwl_planners" type="footstep_hierarchical_planner_node"
+		  name="footstep_hierarchical_planner" output="screen" machine="$(arg machine)">
+		<remap from="reward_map" to="/reward_map" />
+		<remap from="obstacle_map" to="/obstacle_map" />
+		<remap from="body_goal" to="/body_goal" />
+		<remap from="body_path" to="/approximated_body_path" />
+		<remap from="contact_sequence" to="/contact_sequence" />
+		<remap from="contact_sequence_markers" to="/contact_sequence_markers" />
+		<remap from="contact_regions" to="/contact_regions" />
+		<!-- fixed map frame (set to 'map' if SLAM or localization running!) -->
+		<param name="world_frame" type="string" value="world" />
+		<!-- Base frame of the robot -->
+		<param name="base_frame" type="string" value="base_link" />
+	</node>
+	
+</launch>
