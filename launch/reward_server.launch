@@ -1,0 +1,19 @@
+<launch>
+
+	<!-- Machine -->
+	<machine name="localhost" address="localhost" env-loader="/opt/ros/hydro/env.sh"/>
+	<arg name="machine" default="localhost" />
+	
+	<!-- load reward map configurations from YAML file to parameter server -->
+	<rosparam file="$(find terrain_server)/config/reward_map.yaml" command="load"/>
+	
+	<node pkg="terrain_server" type="reward_map_server" name="terrain_reward_map" output="screen" machine="$(arg machine)">
+		<remap from="reward_map" to="/reward_map" />
+		<remap from="octomap_binary" to="/octomap_full" />
+		<!-- fixed map frame (set to 'map' if SLAM or localization running!) -->
+		<param name="world_frame" type="string" value="world" />
+		<!-- Base frame of the robot -->
+		<param name="base_frame" type="string" value="base_link" />
+	</node>
+	
+</launch>
