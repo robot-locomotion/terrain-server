@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(terrain_server)
+project(dwl_terrain)
 
 # Finding external libraries
 find_package(catkin  REQUIRED COMPONENTS

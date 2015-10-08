@@ -1,8 +1,8 @@
-#include <terrain_server/DefaultFlatTerrain.h>
+#include <dwl_terrain/DefaultFlatTerrain.h>
 
 
 
-namespace terrain_server
+namespace dwl_terrain
 {
 
 DefaultFlatTerrain::DefaultFlatTerrain(ros::NodeHandle node) : node_(node), x_min_(0.0), x_max_(0.0),
@@ -54,7 +54,7 @@ void DefaultFlatTerrain::setFlatTerrain()
 	flat_terrain_pub_.publish(cloud);
 }
 
-} //@namespace terrain_server
+} //@namespace dwl_terrain
 
 
 
@@ -63,7 +63,7 @@ int main(int argc, char **argv)
 	ros::init(argc, argv, "default_flat_terrain");
 
 	ros::NodeHandle node("~");
-	terrain_server::DefaultFlatTerrain default_flat_terrain(node);
+	dwl_terrain::DefaultFlatTerrain default_flat_terrain(node);
 
 	ros::spinOnce();
 

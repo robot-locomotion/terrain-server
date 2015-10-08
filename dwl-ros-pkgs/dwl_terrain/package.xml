@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package>
-  <name>terrain_server</name>
+  <name>dwl_terrain</name>
   <version>0.0.5</version>
-  <description>The terrain_server package</description>
+  <description>The dwl_terrain package</description>
 
   <maintainer email="carlos.mastalli@iit.it">Carlos Mastalli</maintainer>
 

@@ -4,7 +4,7 @@
 	<machine name="localhost" address="localhost" env-loader="/opt/ros/hydro/env.sh"/>
 	<arg name="machine" default="localhost" />
 	
-	<node pkg="terrain_server" type="default_flat_terrain" name="default_flat_terrain" output="screen" machine="$(arg machine)">
+	<node pkg="dwl_terrain" type="default_flat_terrain" name="default_flat_terrain" output="screen" machine="$(arg machine)">
 		<remap from="topic_output" to="head_mount_asus_xtion/depth_registered/points" />
 		<!-- fixed map frame (set to 'map' if SLAM or localization running!) -->
 		<param name="world_frame" type="string" value="world" />

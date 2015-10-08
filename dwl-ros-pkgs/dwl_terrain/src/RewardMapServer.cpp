@@ -1,7 +1,7 @@
-#include <terrain_server/RewardMapServer.h>
+#include <dwl_terrain/RewardMapServer.h>
 
 
-namespace terrain_server
+namespace dwl_terrain
 {
 
 RewardMapServer::RewardMapServer(ros::NodeHandle node) : private_node_(node), base_frame_("base_link"), world_frame_("odom") , new_information_(false)
@@ -17,7 +17,7 @@ RewardMapServer::RewardMapServer(ros::NodeHandle node) : private_node_(node), ba
 	tf_octomap_sub_->registerCallback(boost::bind(&RewardMapServer::octomapCallback, this, _1));
 
 	// Declaring the publisher of reward map
-	reward_pub_ = node_.advertise<terrain_server::RewardMap>("reward_map", 1);
+	reward_pub_ = node_.advertise<dwl_terrain::RewardMap>("reward_map", 1);
 
 	reset_srv_ = node_.advertiseService("reset", &RewardMapServer::reset, this);
 }
@@ -199,7 +199,7 @@ void RewardMapServer::publishRewardMap()
 			std::map<dwl::Vertex, dwl::RewardCell> reward_gridmap;
 			reward_gridmap = reward_map_.getRewardMap();
 
-			terrain_server::RewardCell cell;
+			dwl_terrain::RewardCell cell;
 			reward_map_msg_.plane_size = reward_map_.getResolution(true);
 			reward_map_msg_.height_size = reward_map_.getResolution(false);
 
@@ -227,7 +227,7 @@ void RewardMapServer::publishRewardMap()
 	}
 }
 
-} //@namespace terrain_server
+} //@namespace dwl_terrain
 
 
 
@@ -235,7 +235,7 @@ int main(int argc, char **argv)
 {
 	ros::init(argc, argv, "reward_map_server");
 
-	terrain_server::RewardMapServer reward_server;
+	dwl_terrain::RewardMapServer reward_server;
 	if (!reward_server.init())
 		return -1;
 

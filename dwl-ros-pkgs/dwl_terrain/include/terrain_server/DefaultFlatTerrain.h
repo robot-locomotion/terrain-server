@@ -1,12 +1,12 @@
-#ifndef TERRAIN_SERVER__DEFAULT_FLAT_TERRAIN___H
-#define TERRAIN_SERVER__DEFAULT_FLAT_TERRAIN___H
+#ifndef DWL_TERRAIN__DEFAULT_FLAT_TERRAIN___H
+#define DWL_TERRAIN__DEFAULT_FLAT_TERRAIN___H
 
 #include <sensor_msgs/PointCloud2.h>
 #include <pcl_ros/point_cloud.h>
 #include <pcl/point_types.h>
 
 
-namespace terrain_server
+namespace dwl_terrain
 {
 
 /**
@@ -51,6 +51,6 @@ class DefaultFlatTerrain
 		typedef pcl::PointCloud<pcl::PointXYZ> PointCloud;
 };
 
-} //@namespace terrain_server
+} //@namespace dwl_terrain
 
 #endif
