@@ -7,11 +7,11 @@
 #include <octomap_msgs/conversions.h>
 #include <octomap/math/Utils.h>
 
-#include <environment/RewardMap.h>
-#include <environment/SlopeFeature.h>
-#include <environment/HeightDeviationFeature.h>
-#include <environment/CurvatureFeature.h>
-#include <utils/Orientation.h>
+#include <dwl/environment/RewardMap.h>
+#include <dwl/environment/SlopeFeature.h>
+#include <dwl/environment/HeightDeviationFeature.h>
+#include <dwl/environment/CurvatureFeature.h>
+#include <dwl/utils/Orientation.h>
 
 #include <Eigen/Dense>
 #include <vector>

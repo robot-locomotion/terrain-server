@@ -7,8 +7,8 @@
 #include <octomap_msgs/conversions.h>
 #include <octomap/math/Utils.h>
 
-#include <environment/ObstacleMap.h>
-#include <utils/Orientation.h>
+#include <dwl/environment/ObstacleMap.h>
+#include <dwl/utils/Orientation.h>
 
 #include <Eigen/Dense>
 #include <vector>
