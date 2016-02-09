@@ -34,7 +34,7 @@ void DefaultFlatTerrain::setFlatTerrain()
 	double window_y = (y_max_ - y_min_) / 2;
 
 	PointCloud pcl_msg;
-	pcl_msg.header.frame_id = "world";
+	pcl_msg.header.frame_id = world_frame_;
 	for (double xi = 0; xi < window_x; xi += resolution_) {
 		for (int sx = -1; sx <= 1; sx += 2) {
 			for (double yi = 0; yi < window_y; yi += resolution_) {
