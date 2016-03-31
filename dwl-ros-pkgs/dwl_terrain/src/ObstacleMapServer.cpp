@@ -4,7 +4,7 @@
 namespace dwl_terrain
 {
 
-ObstacleMapServer::ObstacleMapServer() : base_frame_("base_link"), world_frame_("odom"), new_information_(false)
+ObstacleMapServer::ObstacleMapServer() : base_frame_("base_link"), world_frame_("world"), new_information_(false)
 {
 	// Declaring the subscriber to octomap and tf messages
 	octomap_sub_ = new message_filters::Subscriber<octomap_msgs::Octomap> (node_, "octomap_binary", 5);

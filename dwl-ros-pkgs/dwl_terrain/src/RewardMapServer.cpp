@@ -4,7 +4,7 @@
 namespace dwl_terrain
 {
 
-RewardMapServer::RewardMapServer(ros::NodeHandle node) : private_node_(node), base_frame_("base_link"), world_frame_("odom") , new_information_(false)
+RewardMapServer::RewardMapServer(ros::NodeHandle node) : private_node_(node), base_frame_("base_link"), world_frame_("world") , new_information_(false)
 {
 	// Getting the base and world frame
 	private_node_.param("base_frame", base_frame_, base_frame_);

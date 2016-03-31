@@ -6,7 +6,7 @@ namespace dwl_terrain
 {
 
 DefaultFlatTerrain::DefaultFlatTerrain(ros::NodeHandle node) : node_(node), x_min_(0.0), x_max_(0.0),
-		y_min_(0.0), y_max_(0.0), resolution_(0.0), height_(0.0), world_frame_("odom")
+		y_min_(0.0), y_max_(0.0), resolution_(0.0), height_(0.0), world_frame_("world")
 {
 	flat_terrain_pub_  = private_node_.advertise<sensor_msgs::PointCloud2>("topic_output", 1);
 	node_.param("world_frame", world_frame_, world_frame_);
