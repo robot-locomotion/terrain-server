@@ -1,10 +1,10 @@
 <launch>
 
 	<!-- Machine -->
-	<machine name="localhost" address="localhost" env-loader="/opt/ros/hydro/env.sh"/>
+	<machine name="localhost" address="localhost" env-loader="/opt/ros/indigo/env.sh"/>
 	<arg name="machine" default="localhost" />
 	
-	<node pkg="dwl_terrain" type="default_flat_terrain" name="default_flat_terrain" output="screen" machine="$(arg machine)">
+	<node name="default_flat_terrain" pkg="dwl_terrain" type="default_flat_terrain" output="screen" machine="$(arg machine)">
 		<remap from="topic_output" to="asus/depth_registered/points" />
 		<!-- fixed map frame (set to 'map' if SLAM or localization running!) -->
 		<param name="world_frame" type="string" value="world" />
@@ -13,7 +13,7 @@
 		<param name="y_min" type="double" value="-0.40" />
 		<param name="y_max" type="double" value="0.40" />
 		<param name="resolution" type="double" value="0.01" />
-		<param name="height" type="double" value="-0.54" />
+		<param name="height" type="double" value="0." />
 	</node>
 	
 </launch>
