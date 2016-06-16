@@ -48,12 +48,11 @@ class RewardMapSubscriber
 		/** @brief Reward map message */
 		dwl_terrain::RewardMap reward_msg_;
 
-		/** @brief Indicates if there is a new motion plan available */
-		bool new_msg_;
-
-
 		/** @brief Reward map (or cells) */
 		dwl::RewardCells reward_map_;
+
+		/** @brief Indicates if there is a new motion plan available */
+		bool new_msg_;
 };
 
 } //@namespace dwl_terrain
