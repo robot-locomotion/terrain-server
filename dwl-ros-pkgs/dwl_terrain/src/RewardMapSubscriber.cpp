@@ -23,7 +23,7 @@ void RewardMapSubscriber::init(ros::NodeHandle node)
 }
 
 
-void RewardMapSubscriber::update(dwl::RewardCells& reward_map)
+bool RewardMapSubscriber::getRewardMap(dwl::RewardCells& reward_map)
 {
 	// Checks if there is a new reward message
 	if (new_msg_) {
@@ -49,7 +49,11 @@ void RewardMapSubscriber::update(dwl::RewardCells& reward_map)
 			// Adding the reward cell to the queue
 			reward_map_[i] = reward_cell;
 		}
+
+		return true;
 	}
+
+	return false;
 }
 
 

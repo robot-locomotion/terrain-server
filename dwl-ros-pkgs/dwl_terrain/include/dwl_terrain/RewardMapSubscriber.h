@@ -2,6 +2,8 @@
 #define DWL_TERRAIN__REWARD_MAP_SUBSCRIBER__H
 
 #include <ros/ros.h>
+#include <realtime_tools/realtime_buffer.h>
+
 #include <dwl/utils/EnvironmentRepresentation.h>
 #include <dwl_terrain/RewardMap.h>
 
@@ -26,10 +28,10 @@ class RewardMapSubscriber
 		void init(ros::NodeHandle node);
 
 		/**
-		 * @brief Updates the vector of reward cells
+		 * @brief Gets the vector of reward cells
 		 * @param dwl::RewardCells& Vector of reward cells
 		 */
-		void update(dwl::RewardCells& reward_map);
+		bool getRewardMap(dwl::RewardCells& reward_map);
 
 
 	private:
