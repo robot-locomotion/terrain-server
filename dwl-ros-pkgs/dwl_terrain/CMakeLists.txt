@@ -30,6 +30,7 @@ generate_messages(DEPENDENCIES  std_msgs)
 
 catkin_package(
   INCLUDE_DIRS  include
+  LIBRARIES  ${PROJECT_NAME}
   CATKIN_DEPENDS  roscpp octomap_msgs message_runtime
   DEPENDS  system_lib eigen)
 
@@ -43,6 +44,13 @@ include_directories(include  ${catkin_INCLUDE_DIRS}
 link_directories(${catkin_LIBRARY_DIRS}
                  ${dwl_LIBRARY_DIRS}
                  ${OCTOMAP_LIBRARY_DIRS})
+
+
+## Declare a cpp library
+add_library(${PROJECT_NAME}  src/RewardMapSubscriber.cpp)
+target_link_libraries(${PROJECT_NAME}  ${catkin_LIBRARIES}
+                                       ${dwl_LIBRARIES})
+add_dependencies(${PROJECT_NAME}  ${dwl_terrain_EXPORTED_TARGETS})
 
 
 ## Declare a cpp executable
