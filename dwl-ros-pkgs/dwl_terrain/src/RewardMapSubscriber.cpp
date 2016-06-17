@@ -18,7 +18,7 @@ RewardMapSubscriber::~RewardMapSubscriber()
 
 void RewardMapSubscriber::init(ros::NodeHandle node)
 {
-	sub_ = node.subscribe<dwl_terrain::RewardMap> ("reward_map", 1,
+	sub_ = node.subscribe<dwl_terrain::RewardMap> ("/reward_map", 1,
 			&RewardMapSubscriber::callback, this, ros::TransportHints().tcpNoDelay());
 }
 
@@ -49,9 +49,12 @@ bool RewardMapSubscriber::getRewardMap(dwl::RewardCells& reward_map)
 			// Adding the reward cell to the queue
 			reward_map_[i] = reward_cell;
 		}
+		reward_map = reward_map_;
 
 		return true;
 	}
+
+	reward_map = reward_map_;
 
 	return false;
 }
