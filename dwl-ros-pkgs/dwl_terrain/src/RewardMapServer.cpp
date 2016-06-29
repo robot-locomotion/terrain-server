@@ -4,7 +4,8 @@
 namespace dwl_terrain
 {
 
-RewardMapServer::RewardMapServer(ros::NodeHandle node) : private_node_(node), base_frame_("base_link"), world_frame_("world") , new_information_(false)
+RewardMapServer::RewardMapServer(ros::NodeHandle node) : private_node_(node),
+		base_frame_("base_link"), world_frame_("world") , new_information_(false)
 {
 	// Getting the base and world frame
 	private_node_.param("base_frame", base_frame_, base_frame_);
@@ -25,8 +26,6 @@ RewardMapServer::RewardMapServer(ros::NodeHandle node) : private_node_(node), ba
 
 RewardMapServer::~RewardMapServer()
 {
-	//octomap_sub_.shutdown();
-
 	if (tf_octomap_sub_){
 		delete tf_octomap_sub_;
 		tf_octomap_sub_ = NULL;
@@ -44,7 +43,8 @@ bool RewardMapServer::init()
 	// Getting the names of search areas
 	XmlRpc::XmlRpcValue area_names;
 	if (!private_node_.getParam("search_areas", area_names)) {
-		ROS_ERROR("No search areas given in the namespace: %s.", private_node_.getNamespace().c_str());
+		ROS_ERROR("No search areas given in the namespace: %s.",
+				private_node_.getNamespace().c_str());
 	} else {
 		// Evaluating the fetching information of the search areas
 		if (area_names.getType() != XmlRpc::XmlRpcValue::TypeArray) {
@@ -95,19 +95,27 @@ bool RewardMapServer::init()
 	// Adding the height deviation feature if it's enable
 	if (enable_height_dev) {
 		// Setting the weight feature
-		private_node_.param("features/height_deviation/weight", weight, default_weight);
+		private_node_.param("features/height_deviation/weight",
+							weight,	default_weight);
 		double flat_height_deviation, max_height_deviation, min_allowed_height;
-		private_node_.param("features/height_deviation/flat_height_deviation", flat_height_deviation, 0.01);
-		private_node_.param("features/height_deviation/max_height_deviation", max_height_deviation, 0.3);
-		private_node_.param("features/height_deviation/min_allowed_height", min_allowed_height, -std::numeric_limits<double>::max());
-		dwl::environment::Feature* height_dev_ptr = new dwl::environment::HeightDeviationFeature(flat_height_deviation,
-				max_height_deviation, min_allowed_height);
+		private_node_.param("features/height_deviation/flat_height_deviation",
+							flat_height_deviation, 0.01);
+		private_node_.param("features/height_deviation/max_height_deviation",
+							 max_height_deviation, 0.3);
+		private_node_.param("features/height_deviation/min_allowed_height",
+							 min_allowed_height, -std::numeric_limits<double>::max());
+		dwl::environment::Feature* height_dev_ptr =
+				new dwl::environment::HeightDeviationFeature(flat_height_deviation,
+															 max_height_deviation,
+															 min_allowed_height);
 		height_dev_ptr->setWeight(weight);
 
 		// Setting the neighboring area
 		double size, resolution;
-		private_node_.param("features/height_deviation/neighboring_area/square_size", size, 0.1);
-		private_node_.param("features/height_deviation/neighboring_area/resolution", resolution, 0.04);
+		private_node_.param("features/height_deviation/neighboring_area/square_size",
+							size, 0.1);
+		private_node_.param("features/height_deviation/neighboring_area/resolution",
+							resolution, 0.04);
 		height_dev_ptr->setNeighboringArea(-size, size, -size, size, resolution);
 
 		// Adding the feature
@@ -150,7 +158,10 @@ void RewardMapServer::octomapCallback(const octomap_msgs::Octomap::ConstPtr& msg
 	// Getting the transformation between the world to robot frame
 	tf::StampedTransform tf_transform;
 	try {
-		tf_listener_.lookupTransform(world_frame_, base_frame_, msg->header.stamp, tf_transform);
+		tf_listener_.lookupTransform(world_frame_,
+									 base_frame_,
+									 msg->header.stamp,
+									 tf_transform);
 	} catch (tf::TransformException& ex) {
 		ROS_ERROR_STREAM("Transform error of sensor data: " << ex.what() << ", quitting callback");
 		return;
@@ -164,7 +175,11 @@ void RewardMapServer::octomapCallback(const octomap_msgs::Octomap::ConstPtr& msg
 
 	// Computing the yaw angle
 	tf::Quaternion q = tf_transform.getRotation();
-	double yaw = dwl::math::getYaw(dwl::math::getRPY(Eigen::Quaterniond(q.getW(), q.getX(), q.getY(), q.getZ())));
+	double yaw =
+			dwl::math::getYaw(dwl::math::getRPY(Eigen::Quaterniond(q.getW(),
+																   q.getX(),
+																   q.getY(),
+																   q.getZ())));
 	robot_position(3) = yaw;
 
 	// Computing the reward map
@@ -172,14 +187,16 @@ void RewardMapServer::octomapCallback(const octomap_msgs::Octomap::ConstPtr& msg
 	clock_gettime(CLOCK_REALTIME, &start_rt);
 	reward_map_.compute(octomap, robot_position);
 	clock_gettime(CLOCK_REALTIME, &end_rt);
-	double duration = (end_rt.tv_sec - start_rt.tv_sec) + 1e-9*(end_rt.tv_nsec - start_rt.tv_nsec);
+	double duration =
+			(end_rt.tv_sec - start_rt.tv_sec) + 1e-9*(end_rt.tv_nsec - start_rt.tv_nsec);
 	ROS_INFO("The duration of computation of reward map is %f seg.", duration);
 
 	new_information_ = true;
 }
 
 
-bool RewardMapServer::reset(std_srvs::Empty::Request& req, std_srvs::Empty::Response& resp)
+bool RewardMapServer::reset(std_srvs::Empty::Request& req,
+							std_srvs::Empty::Response& resp)
 {
 	reward_map_.reset();
 
