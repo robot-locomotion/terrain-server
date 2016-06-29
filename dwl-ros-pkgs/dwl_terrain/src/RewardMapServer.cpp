@@ -199,11 +199,17 @@ void RewardMapServer::publishRewardMap()
 			std::map<dwl::Vertex, dwl::RewardCell> reward_gridmap;
 			reward_gridmap = reward_map_.getRewardMap();
 
-			dwl_terrain::RewardCell cell;
+			// Getting the terrain map resolutions
 			reward_map_msg_.plane_size = reward_map_.getResolution(true);
 			reward_map_msg_.height_size = reward_map_.getResolution(false);
 
+			// Getting the number of cells
+			unsigned int num_cells = reward_gridmap.size();
+			reward_map_msg_.cell.resize(num_cells);
+
 			// Converting the vertexes into a cell message
+			dwl_terrain::RewardCell cell;
+			unsigned int idx = 0;
 			for (std::map<dwl::Vertex, dwl::RewardCell>::iterator vertex_iter = reward_gridmap.begin();
 					vertex_iter != reward_gridmap.end();
 					vertex_iter++)
@@ -215,7 +221,9 @@ void RewardMapServer::publishRewardMap()
 				cell.key_y = reward_cell.key.y;
 				cell.key_z = reward_cell.key.z;
 				cell.reward = reward_cell.reward;
-				reward_map_msg_.cell.push_back(cell);
+				reward_map_msg_.cell[idx] = cell;
+
+				idx++;
 			}
 
 			reward_pub_.publish(reward_map_msg_);
