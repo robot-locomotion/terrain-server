@@ -4,10 +4,26 @@
 #include <sensor_msgs/PointCloud2.h>
 #include <pcl_ros/point_cloud.h>
 #include <pcl/point_types.h>
+#include <string>
+#include <iostream>
 
 
 namespace dwl_terrain
 {
+
+struct Rectangle
+{
+	Rectangle() : center_x(0.), center_y(0.), width(0.), length(0.),
+			yaw(0.), resolution(0.), height(0.) {}
+
+	double center_x;
+	double center_y;
+	double width;
+	double length;
+	double yaw;
+	double resolution;
+	double height;
+};
 
 /**
  * @class DefaultFlatTerrain
@@ -36,14 +52,10 @@ class DefaultFlatTerrain
 		/** @brief Flat terrain point cloud publisher */
 		ros::Publisher flat_terrain_pub_;
 
-		/** @brief Flat terrain properties */
-		double center_x_;
-		double center_y_;
-		double width_;
-		double length_;
-		double yaw_;
-		double resolution_;
-		double height_;
+		/** @brief Number of elements */
+		int n_rectangles_;
+
+		std::vector<Rectangle> rectangles_;
 
 		/** @brief World frame name */
 		std::string world_frame_;

@@ -1,23 +1,44 @@
 #include <dwl_terrain/DefaultFlatTerrain.h>
 
 
-
 namespace dwl_terrain
 {
 
 DefaultFlatTerrain::DefaultFlatTerrain(ros::NodeHandle node) : node_(node),
-		center_x_(0.), center_y_(0.), width_(0.), length_(0.), yaw_(0.),
-		resolution_(0.), height_(0.), world_frame_("world")
+		n_rectangles_(1), world_frame_("world")
 {
 	flat_terrain_pub_  = private_node_.advertise<sensor_msgs::PointCloud2>("topic_output", 1);
-	node_.param("world_frame", world_frame_, world_frame_);
-	node_.param("center_x", center_x_, center_x_);
-	node_.param("center_y", center_y_, center_y_);
-	node_.param("width", width_, width_);
-	node_.param("length", length_, length_);
-	node_.param("yaw", yaw_, yaw_);
-	node_.param("height", height_, height_);
-	node_.param("resolution", resolution_, resolution_);
+
+	// Reading the number of elements
+	node_.param("rectangles", n_rectangles_, n_rectangles_);
+
+	// Reading the rectangles properties
+	rectangles_.resize(n_rectangles_);
+	for (int k = 0; k < n_rectangles_; k++) {
+		std::string ns_name = "rectangle_" + std::to_string(k+1);
+
+		node_.param(ns_name + "/center_x",
+					rectangles_[k].center_x,
+					rectangles_[k].center_x);
+		node_.param(ns_name + "/center_y",
+					rectangles_[k].center_y,
+					rectangles_[k].center_y);
+		node_.param(ns_name + "/width",
+					rectangles_[k].width,
+					rectangles_[k].width);
+		node_.param(ns_name + "/length",
+					rectangles_[k].length,
+					rectangles_[k].length);
+		node_.param(ns_name + "/yaw",
+					rectangles_[k].yaw,
+					rectangles_[k].yaw);
+		node_.param(ns_name + "/height",
+					rectangles_[k].height,
+					rectangles_[k].height);
+		node_.param(ns_name + "/resolution",
+					rectangles_[k].resolution,
+					rectangles_[k].resolution);
+	}
 }
 
 
@@ -31,14 +52,23 @@ void DefaultFlatTerrain::setFlatTerrain()
 {
 	PointCloud pcl_msg;
 	pcl_msg.header.frame_id = world_frame_;
-	for (double xi = 0; xi < length_ / 2; xi += resolution_) {
-		for (int sx = -1; sx <= 1; sx += 2) {
-			for (double yi = 0; yi < width_ / 2; yi += resolution_) {
-				for (int sy = -1; sy <= 1; sy += 2) {
-					double x = sx * xi * cos(yaw_) - sy * yi * sin(yaw_) + center_x_;
-					double y = sx * xi * sin(yaw_) + sy * yi * cos(yaw_) + center_y_;
 
-					pcl_msg.push_back(pcl::PointXYZ(x, y, height_));
+	for (int k = 0; k < n_rectangles_; k++) {
+		for (double xi = 0; xi < rectangles_[k].length / 2;
+				xi += rectangles_[k].resolution) {
+			for (int sx = -1; sx <= 1; sx += 2) {
+				for (double yi = 0; yi < rectangles_[k].width / 2;
+						yi += rectangles_[k].resolution) {
+					for (int sy = -1; sy <= 1; sy += 2) {
+						double x = sx * xi * cos(rectangles_[k].yaw) -
+								sy * yi * sin(rectangles_[k].yaw) +
+								rectangles_[k].center_x;
+						double y = sx * xi * sin(rectangles_[k].yaw) +
+								sy * yi * cos(rectangles_[k].yaw) +
+								rectangles_[k].center_y;
+
+						pcl_msg.push_back(pcl::PointXYZ(x, y, rectangles_[k].height));
+					}
 				}
 			}
 		}

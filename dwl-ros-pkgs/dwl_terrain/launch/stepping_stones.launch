@@ -5,159 +5,105 @@
 	<arg name="machine" default="localhost" />
 	
 
-	<node name="pallet_1" pkg="dwl_terrain" type="default_flat_terrain" output="screen" machine="$(arg machine)">
+	<node name="gap" pkg="dwl_terrain" type="default_flat_terrain" output="screen" machine="$(arg machine)">
 		<remap from="topic_output" to="asus/depth_registered/points" />
 		<param name="world_frame" type="string" value="world" />
-		<param name="center_x" type="double" value="0.1" />
-		<param name="center_y" type="double" value="0." />
-		<param name="width" type="double" value="1." />
-		<param name="length" type="double" value="1.3" />
-		<param name="yaw" type="double" value="0." />		
-		<param name="resolution" type="double" value="0.01" />
-		<param name="height" type="double" value="0." />
-	</node>
-	
-	
-	<node name="pallet_2" pkg="dwl_terrain" type="default_flat_terrain" output="screen" machine="$(arg machine)">
-		<remap from="topic_output" to="asus/depth_registered/points" />
-		<param name="world_frame" type="string" value="world" />
-		<param name="center_x" type="double" value="2.6" />
-		<param name="center_y" type="double" value="0." />
-		<param name="width" type="double" value="1." />
-		<param name="length" type="double" value="1.3" />
-		<param name="yaw" type="double" value="0." />		
-		<param name="resolution" type="double" value="0.01" />
-		<param name="height" type="double" value="0." />
-	</node>
+		<param name="rectangles" type="int" value="12" />
+		<param name="rectangle_1/center_x" type="double" value="0.1" />
+		<param name="rectangle_1/center_y" type="double" value="0." />
+		<param name="rectangle_1/width" type="double" value="1." />
+		<param name="rectangle_1/length" type="double" value="1.3" />
+		<param name="rectangle_1/yaw" type="double" value="0." />
+		<param name="rectangle_1/resolution" type="double" value="0.01" />
+		<param name="rectangle_1/height" type="double" value="0." />
 
-	
-	<node name="stone_1" pkg="dwl_terrain" type="default_flat_terrain" output="screen" machine="$(arg machine)">
-		<remap from="topic_output" to="asus/depth_registered/points" />
-		<param name="world_frame" type="string" value="world" />
-		<param name="center_x" type="double" value="0.95" />
-		<param name="center_y" type="double" value="0." />
-		<param name="width" type="double" value="0.22" />
-		<param name="length" type="double" value="0.22" />
-		<param name="yaw" type="double" value="0." />		
-		<param name="resolution" type="double" value="0.01" />
-		<param name="height" type="double" value="0." />
-	</node>
+		<param name="rectangle_2/center_x" type="double" value="2.6" />
+		<param name="rectangle_2/center_y" type="double" value="0." />
+		<param name="rectangle_2/width" type="double" value="1." />
+		<param name="rectangle_2/length" type="double" value="1.3" />
+		<param name="rectangle_2/yaw" type="double" value="0." />
+		<param name="rectangle_2/resolution" type="double" value="0.01" />
+		<param name="rectangle_2/height" type="double" value="0." />
+		
+		<param name="rectangle_3/center_x" type="double" value="0.95" />
+		<param name="rectangle_3/center_y" type="double" value="0." />
+		<param name="rectangle_3/width" type="double" value="0.22" />
+		<param name="rectangle_3/length" type="double" value="0.22" />
+		<param name="rectangle_3/yaw" type="double" value="0." />
+		<param name="rectangle_3/resolution" type="double" value="0.01" />
+		<param name="rectangle_3/height" type="double" value="0." />
+		
+		<param name="rectangle_4/center_x" type="double" value="1.05" />
+		<param name="rectangle_4/center_y" type="double" value="0.35" />
+		<param name="rectangle_4/width" type="double" value="0.22" />
+		<param name="rectangle_4/length" type="double" value="0.22" />
+		<param name="rectangle_4/yaw" type="double" value="0.5" />
+		<param name="rectangle_4/resolution" type="double" value="0.01" />
+		<param name="rectangle_4/height" type="double" value="0." />
 
-	
-	<node name="stone_2" pkg="dwl_terrain" type="default_flat_terrain" output="screen" machine="$(arg machine)">
-		<remap from="topic_output" to="asus/depth_registered/points" />
-		<param name="world_frame" type="string" value="world" />
-		<param name="center_x" type="double" value="1.05" />
-		<param name="center_y" type="double" value="0.35" />
-		<param name="width" type="double" value="0.22" />
-		<param name="length" type="double" value="0.22" />
-		<param name="yaw" type="double" value="0.5" />		
-		<param name="resolution" type="double" value="0.01" />
-		<param name="height" type="double" value="0." />
-	</node>
-
-
-	<node name="stone_3" pkg="dwl_terrain" type="default_flat_terrain" output="screen" machine="$(arg machine)">
-		<remap from="topic_output" to="asus/depth_registered/points" />
-		<param name="world_frame" type="string" value="world" />
-		<param name="center_x" type="double" value="1.05" />
-		<param name="center_y" type="double" value="-0.35" />
-		<param name="width" type="double" value="0.22" />
-		<param name="length" type="double" value="0.22" />
-		<param name="yaw" type="double" value="-0.5" />		
-		<param name="resolution" type="double" value="0.01" />
-		<param name="height" type="double" value="0." />
-	</node>
-	
-	
-	<node name="stone_4" pkg="dwl_terrain" type="default_flat_terrain" output="screen" machine="$(arg machine)">
-		<remap from="topic_output" to="asus/depth_registered/points" />
-		<param name="world_frame" type="string" value="world" />
-		<param name="center_x" type="double" value="1.35" />
-		<param name="center_y" type="double" value="0.15" />
-		<param name="width" type="double" value="0.22" />
-		<param name="length" type="double" value="0.22" />
-		<param name="yaw" type="double" value="0.3" />		
-		<param name="resolution" type="double" value="0.01" />
-		<param name="height" type="double" value="0." />
-	</node>
-
-	
-	<node name="stone_5" pkg="dwl_terrain" type="default_flat_terrain" output="screen" machine="$(arg machine)">
-		<remap from="topic_output" to="asus/depth_registered/points" />
-		<param name="world_frame" type="string" value="world" />
-		<param name="center_x" type="double" value="1.45" />
-		<param name="center_y" type="double" value="-0.25" />
-		<param name="width" type="double" value="0.22" />
-		<param name="length" type="double" value="0.22" />
-		<param name="yaw" type="double" value="-0.3" />		
-		<param name="resolution" type="double" value="0.01" />
-		<param name="height" type="double" value="0." />
-	</node>
-	
-	
-	<node name="stone_6" pkg="dwl_terrain" type="default_flat_terrain" output="screen" machine="$(arg machine)">
-		<remap from="topic_output" to="asus/depth_registered/points" />
-		<param name="world_frame" type="string" value="world" />
-		<param name="center_x" type="double" value="1.65" />
-		<param name="center_y" type="double" value="0.15" />
-		<param name="width" type="double" value="0.22" />
-		<param name="length" type="double" value="0.22" />
-		<param name="yaw" type="double" value="0.7" />		
-		<param name="resolution" type="double" value="0.01" />
-		<param name="height" type="double" value="0." />
-	</node>
-	
-	
-	<node name="stone_7" pkg="dwl_terrain" type="default_flat_terrain" output="screen" machine="$(arg machine)">
-		<remap from="topic_output" to="asus/depth_registered/points" />
-		<param name="world_frame" type="string" value="world" />
-		<param name="center_x" type="double" value="1.75" />
-		<param name="center_y" type="double" value="-0.25" />
-		<param name="width" type="double" value="0.22" />
-		<param name="length" type="double" value="0.22" />
-		<param name="yaw" type="double" value="-0.1" />		
-		<param name="resolution" type="double" value="0.01" />
-		<param name="height" type="double" value="0." />
-	</node>
-	
-	
-	<node name="stone_8" pkg="dwl_terrain" type="default_flat_terrain" output="screen" machine="$(arg machine)">
-		<remap from="topic_output" to="asus/depth_registered/points" />
-		<param name="world_frame" type="string" value="world" />
-		<param name="center_x" type="double" value="1.45" />
-		<param name="center_y" type="double" value="0.45" />
-		<param name="width" type="double" value="0.22" />
-		<param name="length" type="double" value="0.22" />
-		<param name="yaw" type="double" value="-0.3" />		
-		<param name="resolution" type="double" value="0.01" />
-		<param name="height" type="double" value="0." />
-	</node>
-	
-	
-	<node name="stone_9" pkg="dwl_terrain" type="default_flat_terrain" output="screen" machine="$(arg machine)">
-		<remap from="topic_output" to="asus/depth_registered/points" />
-		<param name="world_frame" type="string" value="world" />
-		<param name="center_x" type="double" value="1.75" />
-		<param name="center_y" type="double" value="0.45" />
-		<param name="width" type="double" value="0.22" />
-		<param name="length" type="double" value="0.22" />
-		<param name="yaw" type="double" value="-0.3" />		
-		<param name="resolution" type="double" value="0.01" />
-		<param name="height" type="double" value="0." />
-	</node>
-	
-	
-	<node name="floor" pkg="dwl_terrain" type="default_flat_terrain" output="screen" machine="$(arg machine)">
-		<remap from="topic_output" to="asus/depth_registered/points" />
-		<param name="world_frame" type="string" value="world" />
-		<param name="center_x" type="double" value="1.3" />
-		<param name="center_y" type="double" value="0." />
-		<param name="width" type="double" value="1." />
-		<param name="length" type="double" value="3.8" />
-		<param name="yaw" type="double" value="0." />		
-		<param name="resolution" type="double" value="0.01" />
-		<param name="height" type="double" value="-0.2" />
+		<param name="rectangle_5/center_x" type="double" value="1.05" />
+		<param name="rectangle_5/center_y" type="double" value="-0.35" />
+		<param name="rectangle_5/width" type="double" value="0.22" />
+		<param name="rectangle_5/length" type="double" value="0.22" />
+		<param name="rectangle_5/yaw" type="double" value="-0.5" />
+		<param name="rectangle_5/resolution" type="double" value="0.01" />
+		<param name="rectangle_5/height" type="double" value="0." />
+		
+		<param name="rectangle_6/center_x" type="double" value="1.35" />
+		<param name="rectangle_6/center_y" type="double" value="0.15" />
+		<param name="rectangle_6/width" type="double" value="0.22" />
+		<param name="rectangle_6/length" type="double" value="0.22" />
+		<param name="rectangle_6/yaw" type="double" value="0.3" />
+		<param name="rectangle_6/resolution" type="double" value="0.01" />
+		<param name="rectangle_6/height" type="double" value="0." />
+		
+		<param name="rectangle_7/center_x" type="double" value="1.45" />
+		<param name="rectangle_7/center_y" type="double" value="-0.25" />
+		<param name="rectangle_7/width" type="double" value="0.22" />
+		<param name="rectangle_7/length" type="double" value="0.22" />
+		<param name="rectangle_7/yaw" type="double" value="-0.3" />
+		<param name="rectangle_7/resolution" type="double" value="0.01" />
+		<param name="rectangle_7/height" type="double" value="0." />
+		
+		<param name="rectangle_8/center_x" type="double" value="1.65" />
+		<param name="rectangle_8/center_y" type="double" value="0.15" />
+		<param name="rectangle_8/width" type="double" value="0.22" />
+		<param name="rectangle_8/length" type="double" value="0.22" />
+		<param name="rectangle_8/yaw" type="double" value="0.7" />
+		<param name="rectangle_8/resolution" type="double" value="0.01" />
+		<param name="rectangle_8/height" type="double" value="0." />
+		
+		<param name="rectangle_9/center_x" type="double" value="1.75" />
+		<param name="rectangle_9/center_y" type="double" value="-0.25" />
+		<param name="rectangle_9/width" type="double" value="0.22" />
+		<param name="rectangle_9/length" type="double" value="0.22" />
+		<param name="rectangle_9/yaw" type="double" value="-0.1" />
+		<param name="rectangle_9/resolution" type="double" value="0.01" />
+		<param name="rectangle_9/height" type="double" value="0." />
+		
+		<param name="rectangle_10/center_x" type="double" value="1.45" />
+		<param name="rectangle_10/center_y" type="double" value="0.45" />
+		<param name="rectangle_10/width" type="double" value="0.22" />
+		<param name="rectangle_10/length" type="double" value="0.22" />
+		<param name="rectangle_10/yaw" type="double" value="-0.3" />
+		<param name="rectangle_10/resolution" type="double" value="0.01" />
+		<param name="rectangle_10/height" type="double" value="0." />
+		
+		<param name="rectangle_11/center_x" type="double" value="1.75" />
+		<param name="rectangle_11/center_y" type="double" value="0.45" />
+		<param name="rectangle_11/width" type="double" value="0.22" />
+		<param name="rectangle_11/length" type="double" value="0.22" />
+		<param name="rectangle_11/yaw" type="double" value="-0.3" />
+		<param name="rectangle_11/resolution" type="double" value="0.01" />
+		<param name="rectangle_11/height" type="double" value="0." />
+		
+		<param name="rectangle_12/center_x" type="double" value="1.3" />
+		<param name="rectangle_12/center_y" type="double" value="0." />
+		<param name="rectangle_12/width" type="double" value="1." />
+		<param name="rectangle_12/length" type="double" value="3.8" />
+		<param name="rectangle_12/yaw" type="double" value="0." />
+		<param name="rectangle_12/resolution" type="double" value="0.01" />
+		<param name="rectangle_12/height" type="double" value="-0.2" />
 	</node>
 	
 </launch>
