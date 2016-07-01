@@ -3,15 +3,16 @@
 	<!-- Machine -->
 	<machine name="localhost" address="localhost" env-loader="/opt/ros/indigo/env.sh"/>
 	<arg name="machine" default="localhost" />
-	
-	<node name="default_flat_terrain" pkg="dwl_terrain" type="default_flat_terrain" output="screen" machine="$(arg machine)">
+
+	<node name="pallet_1" pkg="dwl_terrain" type="default_flat_terrain" output="screen" machine="$(arg machine)">
 		<remap from="topic_output" to="asus/depth_registered/points" />
 		<!-- fixed map frame (set to 'map' if SLAM or localization running!) -->
 		<param name="world_frame" type="string" value="world" />
-		<param name="x_min" type="double" value="-0.50" />
-		<param name="x_max" type="double" value="0.68" />
-		<param name="y_min" type="double" value="-0.40" />
-		<param name="y_max" type="double" value="0.40" />
+		<param name="center_x" type="double" value="0.09" />
+		<param name="center_y" type="double" value="0." />
+		<param name="width" type="double" value="1.18" />
+		<param name="length" type="double" value="0.8" />
+		<param name="yaw" type="double" value="0." />
 		<param name="resolution" type="double" value="0.01" />
 		<param name="height" type="double" value="0." />
 	</node>

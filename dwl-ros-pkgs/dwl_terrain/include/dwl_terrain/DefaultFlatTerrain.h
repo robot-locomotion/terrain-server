@@ -37,12 +37,13 @@ class DefaultFlatTerrain
 		ros::Publisher flat_terrain_pub_;
 
 		/** @brief Flat terrain properties */
-		double x_min_;// = -0.50;
-		double y_min_;// = -0.35;
-		double x_max_;// = 0.80;
-		double y_max_;// = 0.35;
-		double resolution_;// = 0.01;
-		double height_;// = -0.54;
+		double center_x_;
+		double center_y_;
+		double width_;
+		double length_;
+		double yaw_;
+		double resolution_;
+		double height_;
 
 		/** @brief World frame name */
 		std::string world_frame_;
