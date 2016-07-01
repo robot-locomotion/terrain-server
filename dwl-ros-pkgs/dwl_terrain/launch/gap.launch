@@ -43,30 +43,4 @@
 		<param name="height" type="double" value="-0.2" />
 	</node>
 	
-	
-<!---->
-<!--	<node name="pallet_2" pkg="dwl_terrain" type="default_flat_terrain" output="screen" machine="$(arg machine)">-->
-<!--		<remap from="topic_output" to="asus/depth_registered/points" />-->
-<!--		<param name="world_frame" type="string" value="world" />-->
-<!--		<param name="center_x" type="double" value="1.35" />-->
-<!--		<param name="center_y" type="double" value="0." />-->
-<!--		<param name="width" type="double" value="0.3" />-->
-<!--		<param name="length" type="double" value="1." />-->
-<!--		<param name="yaw" type="double" value="0." />-->
-<!--		<param name="resolution" type="double" value="0.01" />-->
-<!--		<param name="height" type="double" value="0." />-->
-<!--	</node>-->
-<!---->
-<!--	<node name="floor" pkg="dwl_terrain" type="default_flat_terrain" output="screen" machine="$(arg machine)">-->
-<!--		<remap from="topic_output" to="asus/depth_registered/points" />-->
-<!--		<param name="world_frame" type="string" value="world" />-->
-<!--		<param name="center_x" type="double" value="0.94" />-->
-<!--		<param name="center_y" type="double" value="0." />-->
-<!--		<param name="width" type="double" value="0.52" />-->
-<!--		<param name="length" type="double" value="1." />-->
-<!--		<param name="yaw" type="double" value="0." />-->
-<!--		<param name="resolution" type="double" value="0.01" />-->
-<!--		<param name="height" type="double" value="0.1" />-->
-<!--	</node>-->
-	
 </launch>
