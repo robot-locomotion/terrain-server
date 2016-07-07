@@ -27,8 +27,8 @@
 
 		<param name="rectangle_3/center_x" type="double" value="0.95" />
 		<param name="rectangle_3/center_y" type="double" value="0." />
-		<param name="rectangle_3/width" type="double" value="1.3" />
-		<param name="rectangle_3/length" type="double" value="3.4" />
+		<param name="rectangle_3/width" type="double" value="1.5" />
+		<param name="rectangle_3/length" type="double" value="3.6" />
 		<param name="rectangle_3/yaw" type="double" value="0." />
 		<param name="rectangle_3/resolution" type="double" value="0.01" />
 		<param name="rectangle_3/height" type="double" value="-0.2" />
