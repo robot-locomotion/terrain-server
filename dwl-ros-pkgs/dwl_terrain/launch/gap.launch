@@ -17,7 +17,7 @@
 		<param name="rectangle_1/resolution" type="double" value="0.01" />
 		<param name="rectangle_1/height" type="double" value="0." />
 
-		<param name="rectangle_2/center_x" type="double" value="1.8" />
+		<param name="rectangle_2/center_x" type="double" value="1.65" />
 		<param name="rectangle_2/center_y" type="double" value="0." />
 		<param name="rectangle_2/width" type="double" value="1." />
 		<param name="rectangle_2/length" type="double" value="1.3" />
