@@ -231,7 +231,6 @@ void RewardMapServer::publishRewardMap()
 					vertex_iter != reward_gridmap.end();
 					vertex_iter++)
 			{
-				dwl::Vertex v = vertex_iter->first;
 				dwl::RewardCell reward_cell = vertex_iter->second;
 
 				cell.key_x = reward_cell.key.x;

@@ -152,7 +152,6 @@ void ObstacleMapServer::publishObstacleMap()
 					vertex_iter != obstacle_gridmap.end();
 					vertex_iter++)
 			{
-				dwl::Vertex v = vertex_iter->first;
 				dwl::Cell obstacle_cell = vertex_iter->second;
 
 				cell.key_x = obstacle_cell.key.x;
