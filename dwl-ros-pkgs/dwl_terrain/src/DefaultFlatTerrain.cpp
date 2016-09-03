@@ -9,6 +9,10 @@ DefaultFlatTerrain::DefaultFlatTerrain(ros::NodeHandle node) : node_(node),
 {
 	flat_terrain_pub_  = private_node_.advertise<sensor_msgs::PointCloud2>("topic_output", 1);
 
+	node_.param("position/x", position_(dwl::rbd::X), 0.);
+	node_.param("position/y", position_(dwl::rbd::Y), 0.);
+	node_.param("position/z", position_(dwl::rbd::Z), 0.);
+
 	// Reading the number of elements
 	node_.param("rectangles", n_rectangles_, n_rectangles_);
 
@@ -62,12 +66,12 @@ void DefaultFlatTerrain::setFlatTerrain()
 					for (int sy = -1; sy <= 1; sy += 2) {
 						double x = sx * xi * cos(rectangles_[k].yaw) -
 								sy * yi * sin(rectangles_[k].yaw) +
-								rectangles_[k].center_x;
+								rectangles_[k].center_x + position_(dwl::rbd::X);
 						double y = sx * xi * sin(rectangles_[k].yaw) +
 								sy * yi * cos(rectangles_[k].yaw) +
-								rectangles_[k].center_y;
+								rectangles_[k].center_y + position_(dwl::rbd::Y);
 
-						pcl_msg.push_back(pcl::PointXYZ(x, y, rectangles_[k].height));
+						pcl_msg.push_back(pcl::PointXYZ(x, y, rectangles_[k].height + position_(dwl::rbd::Z)));
 					}
 				}
 			}

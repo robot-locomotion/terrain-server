@@ -1,6 +1,8 @@
 #ifndef DWL_TERRAIN__DEFAULT_FLAT_TERRAIN___H
 #define DWL_TERRAIN__DEFAULT_FLAT_TERRAIN___H
 
+#include <dwl/utils/RigidBodyDynamics.h>
+#include <dwl/utils/Orientation.h>
 #include <sensor_msgs/PointCloud2.h>
 #include <pcl_ros/point_cloud.h>
 #include <pcl/point_types.h>
@@ -59,6 +61,9 @@ class DefaultFlatTerrain
 
 		/** @brief World frame name */
 		std::string world_frame_;
+
+		/** @brief Position of the terrain w.r.t. the world frame */
+		Eigen::Vector3d position_;
 
 		/** Point cloud data that defines the flat terrain */
 		typedef pcl::PointCloud<pcl::PointXYZ> PointCloud;

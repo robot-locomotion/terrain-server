@@ -7,6 +7,9 @@
 
 	<node name="gap" pkg="dwl_terrain" type="default_flat_terrain" output="screen" machine="$(arg machine)">
 		<remap from="topic_output" to="asus/depth_registered/points" />
+		<param name="position/x" type="double" value="0." /> <!-- -0.49826 -->
+		<param name="position/y" type="double" value="0." /> <!-- -1.24943 -->
+		<param name="position/z" type="double" value="0." /> <!-- -0.1113 -->
 		<param name="world_frame" type="string" value="world" />
 		<param name="rectangles" type="int" value="3" />
 		<param name="rectangle_1/center_x" type="double" value="0." />
