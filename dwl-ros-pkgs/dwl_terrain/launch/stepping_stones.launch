@@ -5,9 +5,12 @@
 	<arg name="machine" default="localhost" />
 	
 
-	<node name="gap" pkg="dwl_terrain" type="default_flat_terrain" output="screen" machine="$(arg machine)">
+	<node name="stepping_stones" pkg="dwl_terrain" type="default_flat_terrain" output="screen" machine="$(arg machine)">
 		<remap from="topic_output" to="asus/depth_registered/points" />
 		<param name="world_frame" type="string" value="world" />
+		<param name="position/x" type="double" value="0." />
+		<param name="position/y" type="double" value="0." />
+		<param name="position/z" type="double" value="0." />
 		<param name="rectangles" type="int" value="12" />
 		<param name="rectangle_1/center_x" type="double" value="0.1" />
 		<param name="rectangle_1/center_y" type="double" value="0." />
@@ -41,10 +44,10 @@
 		<param name="rectangle_4/resolution" type="double" value="0.01" />
 		<param name="rectangle_4/height" type="double" value="0." />
 
-		<param name="rectangle_5/center_x" type="double" value="1.05" />
+		<param name="rectangle_5/center_x" type="double" value="1.1" />
 		<param name="rectangle_5/center_y" type="double" value="-0.35" />
-		<param name="rectangle_5/width" type="double" value="0.22" />
-		<param name="rectangle_5/length" type="double" value="0.22" />
+		<param name="rectangle_5/width" type="double" value="0.26" />
+		<param name="rectangle_5/length" type="double" value="0.26" />
 		<param name="rectangle_5/yaw" type="double" value="-0.5" />
 		<param name="rectangle_5/resolution" type="double" value="0.01" />
 		<param name="rectangle_5/height" type="double" value="0." />
