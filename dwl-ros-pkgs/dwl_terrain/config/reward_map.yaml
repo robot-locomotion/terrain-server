@@ -20,6 +20,6 @@ terrain_reward_map:
   # Defining the features for the reward map generation
   features:
     slope: {enable: false, weight: 300}
-    height_deviation: {enable: true, weight: 600, neighboring_area: {square_size: 0.12, resolution: 0.04},
+    height_deviation: {enable: true, weight: 600, neighboring_area: {square_size: 0.08, resolution: 0.04},
      flat_height_deviation: 0.01, max_height_deviation: 0.20, min_allowed_height: -0.15}
     curvature: {enable: false, weight: 100}
