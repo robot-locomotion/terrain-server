@@ -1,5 +1,5 @@
-#ifndef DWL_TERRAIN__REWARD_MAP_SERVER___H
-#define DWL_TERRAIN__REWARD_MAP_SERVER___H
+#ifndef DWL_TERRAIN__TERRAIN_MAP_SERVER___H
+#define DWL_TERRAIN__TERRAIN_MAP_SERVER___H
 
 #include <ros/ros.h>
 #include <octomap_msgs/Octomap.h>
@@ -7,7 +7,6 @@
 #include <octomap_msgs/conversions.h>
 #include <octomap/math/Utils.h>
 
-#include <dwl/environment/RewardMap.h>
 #include <dwl/environment/SlopeFeature.h>
 #include <dwl/environment/HeightDeviationFeature.h>
 #include <dwl/environment/CurvatureFeature.h>
@@ -16,8 +15,8 @@
 #include <Eigen/Dense>
 #include <vector>
 #include <geometry_msgs/PoseArray.h>
-#include <dwl_terrain/RewardMap.h>
-#include <dwl_terrain/RewardCell.h>
+#include <dwl_terrain/TerrainMap.h>
+#include <dwl_terrain/TerrainCell.h>
 #include <std_srvs/Empty.h>
 
 #include <tf/transform_datatypes.h>
@@ -25,24 +24,26 @@
 #include <tf/message_filter.h>
 #include <message_filters/subscriber.h>
 
+#include <dwl/environment/TerrainMapping.h>
+
 
 namespace dwl_terrain
 {
 
 /**
- * @class RewardMapServer
- * @brief Class for building reward map of the environment
+ * @class TerrainMapServer
+ * @brief Class for building terrain map
  */
-class RewardMapServer
+class TerrainMapServer
 {
 	public:
 		/** @brief Constructor function */
-		RewardMapServer(ros::NodeHandle node = ros::NodeHandle("~"));
+		TerrainMapServer(ros::NodeHandle node = ros::NodeHandle("~"));
 
 		/** @brief Destructor function */
-		~RewardMapServer();
+		~TerrainMapServer();
 
-		/** @brief Initialization of the reward map server */
+		/** @brief Initialization of the terrain map server */
 		bool init();
 
 		/**
@@ -51,11 +52,12 @@ class RewardMapServer
 		 */
 		void octomapCallback(const octomap_msgs::Octomap::ConstPtr& msg);
 
-		/** @brief Resets the reward map */
-		bool reset(std_srvs::Empty::Request& req, std_srvs::Empty::Response& resp);
+		/** @brief Resets the terrain map */
+		bool reset(std_srvs::Empty::Request& req,
+				   std_srvs::Empty::Response& resp);
 
-		/** @brief Publishes a reward map */
-		void publishRewardMap();
+		/** @brief Publishes a terrain map */
+		void publishTerrainMap();
 
 
 	private:
@@ -65,13 +67,13 @@ class RewardMapServer
 		/** @brief Private ROS node handle */
 		ros::NodeHandle private_node_;
 
-		/** @brief Pointer to the reward map class */
-		dwl::environment::RewardMap reward_map_;
+		/** @brief Pointer to the terrain mapping class */
+		dwl::environment::TerrainMapping terrain_map_;
 
-		/** @brief Reward map publisher */
-		ros::Publisher reward_pub_;
+		/** @brief Terrain map publisher */
+		ros::Publisher map_pub_;
 
-		/** @brief Octomap subcriber */
+		/** @brief Octomap subscriber */
 		message_filters::Subscriber<octomap_msgs::Octomap>* octomap_sub_;
 
 		/** @brief TF and octomap subscriber */
@@ -80,8 +82,8 @@ class RewardMapServer
 		/** @brief Reset service */
 		ros::ServiceServer reset_srv_;
 
-		/** @brief Reward map message */
-		dwl_terrain::RewardMap reward_map_msg_;
+		/** @brief Terrain map message */
+		dwl_terrain::TerrainMap map_msg_;
 
 		/** @brief TF listener */
 		tf::TransformListener tf_listener_;
@@ -92,7 +94,7 @@ class RewardMapServer
 		/** @brief World frame */
 		std::string world_frame_;
 
-		/** @brief Indicates if it was computed new information of the reward map */
+		/** @brief Indicates if it was computed new information of the terrain map */
 		bool new_information_;
 };
 
