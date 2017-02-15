@@ -2,19 +2,15 @@
 #define DWL_TERRAIN__TERRAIN_MAP_SERVER___H
 
 #include <ros/ros.h>
-#include <octomap_msgs/Octomap.h>
-#include <octomap/octomap.h>
-#include <octomap_msgs/conversions.h>
-#include <octomap/math/Utils.h>
 
+#include <dwl/environment/TerrainMapping.h>
 #include <dwl/environment/SlopeFeature.h>
 #include <dwl/environment/HeightDeviationFeature.h>
 #include <dwl/environment/CurvatureFeature.h>
 #include <dwl/utils/Orientation.h>
 
-#include <Eigen/Dense>
-#include <vector>
-#include <geometry_msgs/PoseArray.h>
+#include <octomap_msgs/conversions.h>
+#include <octomap_msgs/Octomap.h>
 #include <dwl_terrain/TerrainMap.h>
 #include <dwl_terrain/TerrainCell.h>
 #include <std_srvs/Empty.h>
@@ -24,7 +20,6 @@
 #include <tf/message_filter.h>
 #include <message_filters/subscriber.h>
 
-#include <dwl/environment/TerrainMapping.h>
 
 
 namespace dwl_terrain
