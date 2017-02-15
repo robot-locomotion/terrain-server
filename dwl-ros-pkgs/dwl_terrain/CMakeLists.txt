@@ -25,9 +25,12 @@ add_message_files(FILES  TerrainCell.msg
                          Cell.msg
                          ObstacleMap.msg)
 
+add_service_files(FILES  TerrainData.srv)
+
 # Generating the messages
 generate_messages(DEPENDENCIES  std_msgs
-                                geometry_msgs)
+                                geometry_msgs
+                                dwl_msgs)
 
 
 catkin_package(

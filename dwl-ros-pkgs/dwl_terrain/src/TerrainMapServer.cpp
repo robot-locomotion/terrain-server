@@ -5,7 +5,8 @@ namespace dwl_terrain
 {
 
 TerrainMapServer::TerrainMapServer(ros::NodeHandle node) : private_node_(node),
-		base_frame_("base_link"), world_frame_("world") , new_information_(false)
+		terrain_discretization_(0.04, 0.04, M_PI / 200),
+		base_frame_("base_link"), world_frame_("world"), new_information_(false)
 {
 	// Getting the base and world frame
 	private_node_.param("base_frame", base_frame_, base_frame_);
@@ -26,6 +27,8 @@ TerrainMapServer::TerrainMapServer(ros::NodeHandle node) : private_node_(node),
 	map_pub_ = node_.advertise<dwl_terrain::TerrainMap>("terrain_map", 1);
 
 	reset_srv_ = node_.advertiseService("reset", &TerrainMapServer::reset, this);
+	terrain_data_srv_ = 
+			node_.advertiseService("terrain_data", &TerrainMapServer::getTerrainData, this);
 }
 
 
@@ -208,6 +211,45 @@ bool TerrainMapServer::reset(std_srvs::Empty::Request& req,
 	ROS_INFO("Reset terrain map");
 
 	return true;
+}
+
+
+bool TerrainMapServer::getTerrainData(dwl_terrain::TerrainData::Request& req,
+									  dwl_terrain::TerrainData::Response& res)
+{
+	if (new_information_) {
+		Eigen::Vector2d position(req.position.x, req.position.y);
+
+
+		std::map<dwl::Vertex, dwl::TerrainCell> terrain_gridmap =
+			terrain_map_.getTerrainMap();
+
+		terrain_discretization_.setEnvironmentResolution(terrain_map_.getResolution(true), true);
+		terrain_discretization_.setEnvironmentResolution(terrain_map_.getResolution(false), false);
+
+		dwl::Vertex vertex;
+		terrain_discretization_.coordToVertex(vertex, position);
+
+		dwl::TerrainCell cell = terrain_gridmap.find(vertex)->second;
+
+		res.cost = -cell.reward;
+		res.normal.x = cell.normal(dwl::rbd::X);
+		res.normal.y = cell.normal(dwl::rbd::Y);
+		res.normal.z = cell.normal(dwl::rbd::Z);
+
+		std::cout << "cost = " << res.cost << std::endl;
+/*		
+		dwl::environment::TerrainMap map_interface;
+		map_interface.setTerrainMap(terrain_map_.getTerrainMap());
+
+		res.height = getTerrainHeight(position);
+		res.cost = getTerrainCost(position);
+//		res.normal = getTerrainNormal(position);
+*/
+		return true;
+	}
+	
+	return false;
 }
 
 

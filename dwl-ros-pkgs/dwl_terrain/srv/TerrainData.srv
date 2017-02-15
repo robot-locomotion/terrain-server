@@ -1,0 +1,5 @@
+dwl_msgs/Vector2 position
+---
+float64 height
+float64 cost
+geometry_msgs/Vector3 normal

@@ -4,6 +4,7 @@
 #include <ros/ros.h>
 
 #include <dwl/environment/TerrainMapping.h>
+#include <dwl/environment/SpaceDiscretization.h>
 #include <dwl/environment/SlopeFeature.h>
 #include <dwl/environment/HeightDeviationFeature.h>
 #include <dwl/environment/CurvatureFeature.h>
@@ -14,6 +15,7 @@
 #include <dwl_terrain/TerrainMap.h>
 #include <dwl_terrain/TerrainCell.h>
 #include <std_srvs/Empty.h>
+#include <dwl_terrain/TerrainData.h>
 
 #include <tf/transform_datatypes.h>
 #include <tf/transform_listener.h>
@@ -51,6 +53,10 @@ class TerrainMapServer
 		bool reset(std_srvs::Empty::Request& req,
 				   std_srvs::Empty::Response& resp);
 
+		/** @brief Gets the terrain data */
+		bool getTerrainData(dwl_terrain::TerrainData::Request& req,
+							dwl_terrain::TerrainData::Response& res);
+
 		/** @brief Publishes a terrain map */
 		void publishTerrainMap();
 
@@ -65,6 +71,11 @@ class TerrainMapServer
 		/** @brief Pointer to the terrain mapping class */
 		dwl::environment::TerrainMapping terrain_map_;
 
+		/**
+		 *  @brief Object of the SpaceDiscretization class for defining the
+		 *  conversion routines for the terrain cost-map */
+		dwl::environment::SpaceDiscretization terrain_discretization_;
+
 		/** @brief Terrain map publisher */
 		ros::Publisher map_pub_;
 
@@ -76,6 +87,9 @@ class TerrainMapServer
 
 		/** @brief Reset service */
 		ros::ServiceServer reset_srv_;
+
+		/** @bief Get the terrain data service */
+		ros::ServiceServer terrain_data_srv_;
 
 		/** @brief Terrain map message */
 		dwl_terrain::TerrainMap map_msg_;
