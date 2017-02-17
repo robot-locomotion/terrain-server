@@ -219,18 +219,7 @@ bool TerrainMapServer::getTerrainData(dwl_terrain::TerrainData::Request& req,
 {
 	if (new_information_) {
 		Eigen::Vector2d position(req.position.x, req.position.y);
-
-
-		std::map<dwl::Vertex, dwl::TerrainCell> terrain_gridmap =
-			terrain_map_.getTerrainMap();
-
-		terrain_discretization_.setEnvironmentResolution(terrain_map_.getResolution(true), true);
-		terrain_discretization_.setEnvironmentResolution(terrain_map_.getResolution(false), false);
-
-		dwl::Vertex vertex;
-		terrain_discretization_.coordToVertex(vertex, position);
-
-		dwl::TerrainCell cell = terrain_gridmap.find(vertex)->second;
+		dwl::TerrainCell cell = terrain_map_.getTerrainData(position);
 
 		res.cost = -cell.reward;
 		res.normal.x = cell.normal(dwl::rbd::X);
@@ -260,8 +249,7 @@ void TerrainMapServer::publishTerrainMap()
 		if (map_pub_.getNumSubscribers() > 0) {
 			map_msg_.header.stamp = ros::Time::now();
 
-			std::map<dwl::Vertex, dwl::TerrainCell> terrain_gridmap;
-			terrain_gridmap = terrain_map_.getTerrainMap();
+			dwl::TerrainDataMap terrain_gridmap = terrain_map_.getTerrainDataMap();
 
 			// Getting the terrain map resolutions
 			map_msg_.plane_size = terrain_map_.getResolution(true);
@@ -274,7 +262,7 @@ void TerrainMapServer::publishTerrainMap()
 			// Converting the vertexes into a cell message
 			dwl_terrain::TerrainCell cell;
 			unsigned int idx = 0;
-			for (std::map<dwl::Vertex, dwl::TerrainCell>::iterator vertex_iter = terrain_gridmap.begin();
+			for (dwl::TerrainDataMap::iterator vertex_iter = terrain_gridmap.begin();
 					vertex_iter != terrain_gridmap.end();
 					vertex_iter++)
 			{
