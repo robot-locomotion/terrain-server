@@ -42,7 +42,7 @@ bool TerrainMapSubscriber::getTerrainMap(dwl::TerrainData& map)
 			cell.key.x = map_msg_.cell[i].key_x;
 			cell.key.y = map_msg_.cell[i].key_y;
 			cell.key.z = map_msg_.cell[i].key_z;
-			cell.reward = map_msg_.cell[i].reward;
+			cell.cost = map_msg_.cell[i].cost;
 			cell.plane_size = map_msg_.plane_size;
 			cell.height_size = map_msg_.height_size;
 

@@ -221,7 +221,7 @@ bool TerrainMapServer::getTerrainData(dwl_terrain::TerrainData::Request& req,
 		Eigen::Vector2d position(req.position.x, req.position.y);
 		dwl::TerrainCell cell = terrain_map_.getTerrainData(position);
 
-		res.cost = -cell.reward;
+		res.cost = cell.cost;
 		res.normal.x = cell.normal(dwl::rbd::X);
 		res.normal.y = cell.normal(dwl::rbd::Y);
 		res.normal.z = cell.normal(dwl::rbd::Z);
@@ -271,7 +271,7 @@ void TerrainMapServer::publishTerrainMap()
 				cell.key_x = terrain_cell.key.x;
 				cell.key_y = terrain_cell.key.y;
 				cell.key_z = terrain_cell.key.z;
-				cell.reward = terrain_cell.reward;
+				cell.cost = terrain_cell.cost;
 				cell.normal.x = terrain_cell.normal(dwl::rbd::X);
 				cell.normal.y = terrain_cell.normal(dwl::rbd::Y);
 				cell.normal.z = terrain_cell.normal(dwl::rbd::Z);
