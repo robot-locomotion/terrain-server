@@ -226,15 +226,6 @@ bool TerrainMapServer::getTerrainData(dwl_terrain::TerrainData::Request& req,
 		res.normal.y = cell.normal(dwl::rbd::Y);
 		res.normal.z = cell.normal(dwl::rbd::Z);
 
-		std::cout << "cost = " << res.cost << std::endl;
-/*		
-		dwl::environment::TerrainMap map_interface;
-		map_interface.setTerrainMap(terrain_map_.getTerrainMap());
-
-		res.height = getTerrainHeight(position);
-		res.cost = getTerrainCost(position);
-//		res.normal = getTerrainNormal(position);
-*/
 		return true;
 	}
 	

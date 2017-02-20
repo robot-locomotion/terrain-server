@@ -33,7 +33,11 @@ bool TerrainMapSubscriber::getTerrainMap(dwl::TerrainData& map)
 
 		// Getting the number of cells
 		unsigned int num_cells = map_msg_.cell.size();
-		terrain_map_.resize(num_cells);
+		terrain_map_.data.resize(num_cells);
+
+		// Setting up the terrain resolution
+		terrain_map_.plane_size = map_msg_.plane_size;
+		terrain_map_.height_size = map_msg_.height_size;
 
 		// Converting the messages to dwl::TerrainMap format
 		dwl::TerrainCell cell;
@@ -43,11 +47,9 @@ bool TerrainMapSubscriber::getTerrainMap(dwl::TerrainData& map)
 			cell.key.y = map_msg_.cell[i].key_y;
 			cell.key.z = map_msg_.cell[i].key_z;
 			cell.cost = map_msg_.cell[i].cost;
-			cell.plane_size = map_msg_.plane_size;
-			cell.height_size = map_msg_.height_size;
 
 			// Adding the terrain cell to the queue
-			terrain_map_[i] = cell;
+			terrain_map_.data[i] = cell;
 		}
 		map = terrain_map_;
 
