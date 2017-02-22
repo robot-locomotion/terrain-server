@@ -18,7 +18,7 @@
 		<param name="rectangle_1/length" type="double" value="1.2" />
 		<param name="rectangle_1/yaw" type="double" value="0." />
 		<param name="rectangle_1/resolution" type="double" value="0.01" />
-		<param name="rectangle_1/height" type="double" value="0.12" />
+		<param name="rectangle_1/height" type="double" value="0.14" />
 
 		<param name="rectangle_2/center_x" type="double" value="1.45" />
 		<param name="rectangle_2/center_y" type="double" value="0." />
@@ -26,7 +26,7 @@
 		<param name="rectangle_2/length" type="double" value="1.2" />
 		<param name="rectangle_2/yaw" type="double" value="0." />
 		<param name="rectangle_2/resolution" type="double" value="0.01" />
-		<param name="rectangle_2/height" type="double" value="0.24" />
+		<param name="rectangle_2/height" type="double" value="0.28" />
 
 		<param name="rectangle_3/center_x" type="double" value="0." />
 		<param name="rectangle_3/center_y" type="double" value="0." />
