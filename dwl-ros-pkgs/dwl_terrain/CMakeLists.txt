@@ -8,6 +8,7 @@ find_package(catkin  REQUIRED COMPONENTS
   roscpp
   message_generation
   std_msgs
+  geometry_msgs
   octomap_msgs
   std_srvs
   tf
@@ -19,13 +20,17 @@ find_package(octomap  REQUIRED)
 
 
 # Adding the message files
-add_message_files(FILES  RewardCell.msg
-                         RewardMap.msg
+add_message_files(FILES  TerrainCell.msg
+                         TerrainMap.msg
                          Cell.msg
                          ObstacleMap.msg)
 
+add_service_files(FILES  TerrainData.srv)
+
 # Generating the messages
-generate_messages(DEPENDENCIES  std_msgs)
+generate_messages(DEPENDENCIES  std_msgs
+                                geometry_msgs
+                                dwl_msgs)
 
 
 catkin_package(
@@ -50,19 +55,19 @@ link_directories(${catkin_LIBRARY_DIRS}
 
 
 ## Declare a cpp library
-add_library(${PROJECT_NAME}  src/RewardMapSubscriber.cpp)
+add_library(${PROJECT_NAME}  src/TerrainMapSubscriber.cpp)
 target_link_libraries(${PROJECT_NAME}  ${catkin_LIBRARIES}
                                        ${dwl_LIBRARIES})
 add_dependencies(${PROJECT_NAME}  ${dwl_terrain_EXPORTED_TARGETS})
 
 
 ## Declare a cpp executable
-add_executable(reward_map_server  src/RewardMapServer.cpp)
-add_dependencies(reward_map_server  ${catkin_EXPORTED_TARGETS})
-target_link_libraries(reward_map_server  ${catkin_LIBRARIES}
+add_executable(terrain_map_server  src/TerrainMapServer.cpp)
+add_dependencies(terrain_map_server  ${catkin_EXPORTED_TARGETS})
+target_link_libraries(terrain_map_server  ${catkin_LIBRARIES}
                                          ${dwl_LIBRARIES}
                                          ${OCTOMAP_LIBRARIES})
-add_dependencies(reward_map_server  ${PROJECT_NAME}_gencpp)
+add_dependencies(terrain_map_server  ${PROJECT_NAME}_gencpp)
 
 add_executable(obstacle_map_server  src/ObstacleMapServer.cpp)
 add_dependencies(obstacle_map_server  ${catkin_EXPORTED_TARGETS})
