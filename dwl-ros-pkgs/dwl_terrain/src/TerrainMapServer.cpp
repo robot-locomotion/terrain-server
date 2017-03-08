@@ -193,6 +193,7 @@ void TerrainMapServer::octomapCallback(const octomap_msgs::Octomap::ConstPtr& ms
 	// Computing the terrain map
 	timespec start_rt, end_rt;
 	clock_gettime(CLOCK_REALTIME, &start_rt);
+	new_information_ = false;
 	terrain_map_.compute(octomap, robot_position);
 	clock_gettime(CLOCK_REALTIME, &end_rt);
 	double duration =
@@ -207,7 +208,6 @@ bool TerrainMapServer::reset(std_srvs::Empty::Request& req,
 							std_srvs::Empty::Response& resp)
 {
 	terrain_map_.reset();
-
 	ROS_INFO("Reset terrain map");
 
 	return true;
@@ -276,7 +276,6 @@ void TerrainMapServer::publishTerrainMap()
 
 			// Deleting old information
 			map_msg_.cell.clear();
-			new_information_ = false;
 		}
 	}
 }
