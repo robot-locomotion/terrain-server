@@ -55,7 +55,7 @@ link_directories(${catkin_LIBRARY_DIRS}
 
 
 ## Declare a cpp library
-add_library(${PROJECT_NAME}  src/TerrainMapSubscriber.cpp)
+add_library(${PROJECT_NAME}  src/TerrainMapInterface.cpp)
 target_link_libraries(${PROJECT_NAME}  ${catkin_LIBRARIES}
                                        ${dwl_LIBRARIES})
 add_dependencies(${PROJECT_NAME}  ${dwl_terrain_EXPORTED_TARGETS})

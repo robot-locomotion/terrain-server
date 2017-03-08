@@ -222,6 +222,7 @@ bool TerrainMapServer::getTerrainData(dwl_terrain::TerrainData::Request& req,
 		dwl::TerrainCell cell = terrain_map_.getTerrainData(position);
 
 		res.cost = cell.cost;
+		res.height = cell.height;
 		res.normal.x = cell.normal(dwl::rbd::X);
 		res.normal.y = cell.normal(dwl::rbd::Y);
 		res.normal.z = cell.normal(dwl::rbd::Z);
