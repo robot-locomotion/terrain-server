@@ -4,6 +4,7 @@
 #include <ros/ros.h>
 #include <realtime_tools/realtime_buffer.h>
 
+#include <dwl/environment/TerrainMap.h>
 #include <dwl/environment/SpaceDiscretization.h>
 #include <dwl/utils/RigidBodyDynamics.h>
 #include <dwl/utils/EnvironmentRepresentation.h>
@@ -30,6 +31,8 @@ class TerrainMapInterface
 		 */
 		void init(ros::NodeHandle node);
 
+		void updateTerrainMap();
+
 		/**
 		 * @brief Gets the vector of terrain cells
 		 * @param dwl::TerrainData& Vector of terrain cells
@@ -37,11 +40,30 @@ class TerrainMapInterface
 		bool getTerrainMap(dwl::TerrainData& map);
 
 		/** @brief These methods allows us to call the terrain map service
-		 * and get the desired terrain data */
-		const dwl::TerrainCell& getTerrainData(const Eigen::Vector2d& position);
-		double getTerrainCost(const Eigen::Vector2d& position);
-		double getTerrainHeight(const Eigen::Vector2d& position);
-		Eigen::Vector3d getTerrainNormal(const Eigen::Vector2d& position);
+		 * and get the desired terrain data. Note that returns false
+		 * if there is not available data, and in that case a default value is
+		 * assigned */
+		const dwl::TerrainCell& requestTerrainData(const Eigen::Vector2d& position);
+		const double& requestTerrainCost(const Eigen::Vector2d& position);
+		const double& requestTerrainHeight(const Eigen::Vector2d& position);
+		const Eigen::Vector3d& requestTerrainNormal(const Eigen::Vector2d& position);
+
+		/** @brief These methods allows us to get the data from the updated
+		 * terrain map and get the desired terrain data. Note that returns false
+		 * if there is not available data, and in that case a default value is
+		 * assigned */
+		bool getTerrainData(dwl::TerrainCell& cell,
+							const Eigen::Vector2d& position) const;
+		const dwl::TerrainCell& getTerrainData(const Eigen::Vector2d& position) const;
+		bool getTerrainCost(double& cost,
+							const Eigen::Vector2d& position) const;
+		const double& getTerrainCost(const Eigen::Vector2d& position) const;
+		bool getTerrainHeight(double& height,
+							  const Eigen::Vector2d& position) const;
+		double getTerrainHeight(const Eigen::Vector2d& position) const;
+		bool getTerrainNormal(Eigen::Vector3d& normal,
+							  const Eigen::Vector2d& position) const;
+		const Eigen::Vector3d& getTerrainNormal(const Eigen::Vector2d& position) const;
 
 
 	private:
@@ -64,11 +86,15 @@ class TerrainMapInterface
 		dwl_terrain::TerrainMap map_msg_;
 
 		/** @brief Terrain map (or cells) */
+		std::shared_ptr<dwl::environment::TerrainMap> terrain_map_;
 		dwl::TerrainCell terrain_cell_;
-		dwl::TerrainData terrain_map_;
+		dwl::TerrainData terrain_data_;
 
-		/** @brief Indicates if there is a new motion plan available */
+		/** @brief Indicates if there is a new terrain map available */
 		bool new_msg_;
+
+		/** @brief Indicates if there is a terrain map available */
+		bool is_terrain_data_;
 };
 
 } //@namespace dwl_terrain

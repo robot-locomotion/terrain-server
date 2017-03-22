@@ -4,11 +4,13 @@
 namespace dwl_terrain
 {
 
-TerrainMapInterface::TerrainMapInterface() : new_msg_(false)
+TerrainMapInterface::TerrainMapInterface() : new_msg_(false),
+		is_terrain_data_(false)
 {
 	ros::NodeHandle node;
 	terrain_clt_ =
 			node.serviceClient<dwl_terrain::TerrainData>("/terrain_data");
+	terrain_map_.reset(new dwl::environment::TerrainMap());
 }
 
 
@@ -25,7 +27,7 @@ void TerrainMapInterface::init(ros::NodeHandle node)
 }
 
 
-bool TerrainMapInterface::getTerrainMap(dwl::TerrainData& map)
+void TerrainMapInterface::updateTerrainMap()
 {
 	// Checks if there is a new terrain map message
 	if (new_msg_) {
@@ -35,13 +37,11 @@ bool TerrainMapInterface::getTerrainMap(dwl::TerrainData& map)
 
 		// Getting the number of cells
 		unsigned int num_cells = map_msg_.cell.size();
-		terrain_map_.data.resize(num_cells);
+		terrain_data_.data.resize(num_cells);
 
 		// Setting up the terrain resolution
-		terrain_map_.plane_size = map_msg_.plane_size;
-		terrain_map_.height_size = map_msg_.height_size;
-		dwl::environment::SpaceDiscretization model(terrain_map_.plane_size);
-		model.setEnvironmentResolution(terrain_map_.height_size, false);
+		terrain_data_.plane_size = map_msg_.plane_size;
+		terrain_data_.height_size = map_msg_.height_size;
 
 		// Converting the messages to dwl::TerrainMap format
 		dwl::TerrainCell cell;
@@ -51,27 +51,35 @@ bool TerrainMapInterface::getTerrainMap(dwl::TerrainData& map)
 			cell.key.y = map_msg_.cell[i].key_y;
 			cell.key.z = map_msg_.cell[i].key_z;
 			cell.cost = map_msg_.cell[i].cost;
-			model.keyToCoord(cell.height, cell.key.z, false);
 			cell.normal =
 					Eigen::Vector3d(map_msg_.cell[i].normal.x,
 									map_msg_.cell[i].normal.y,
 									map_msg_.cell[i].normal.z);
 
 			// Adding the terrain cell to the queue
-			terrain_map_.data[i] = cell;
+			terrain_data_.data[i] = cell;
 		}
-		map = terrain_map_;
 
-		return true;
+		terrain_map_->setTerrainMap(terrain_data_);
+
+		// We have an initial map
+		if (!is_terrain_data_)
+			is_terrain_data_ = true;
 	}
-
-	map = terrain_map_;
-
-	return false;
 }
 
 
-const dwl::TerrainCell& TerrainMapInterface::getTerrainData(const Eigen::Vector2d& position)
+bool TerrainMapInterface::getTerrainMap(dwl::TerrainData& map)
+{
+	if (is_terrain_data_) {
+		map = terrain_data_;
+		return true;
+	} else
+		return false;
+}
+
+
+const dwl::TerrainCell& TerrainMapInterface::requestTerrainData(const Eigen::Vector2d& position)
 {
 	dwl_terrain::TerrainData srv;
 	srv.request.position.x = position(dwl::rbd::X);
@@ -89,28 +97,79 @@ const dwl::TerrainCell& TerrainMapInterface::getTerrainData(const Eigen::Vector2
 		terrain_cell_.cost = 0.;
 		terrain_cell_.height = 0.;
 		terrain_cell_.normal = Eigen::Vector3d::UnitZ();
-		return terrain_cell_;
 	}
 
 	return terrain_cell_;
 }
 
 
-double TerrainMapInterface::getTerrainCost(const Eigen::Vector2d& position)
+const double& TerrainMapInterface::requestTerrainCost(const Eigen::Vector2d& position)
 {
-	return getTerrainData(position).cost;
+	return requestTerrainData(position).cost;
 }
 
 
-double TerrainMapInterface::getTerrainHeight(const Eigen::Vector2d& position)
+const double& TerrainMapInterface::requestTerrainHeight(const Eigen::Vector2d& position)
 {
-	return getTerrainData(position).height;
+	return requestTerrainData(position).height;
 }
 
 
-Eigen::Vector3d TerrainMapInterface::getTerrainNormal(const Eigen::Vector2d& position)
+const Eigen::Vector3d& TerrainMapInterface::requestTerrainNormal(const Eigen::Vector2d& position)
 {
-	return getTerrainData(position).normal;
+	return requestTerrainData(position).normal;
+}
+
+
+bool TerrainMapInterface::getTerrainData(dwl::TerrainCell& cell,
+										 const Eigen::Vector2d& position) const
+{
+	return terrain_map_->getTerrainData(cell, position);
+}
+
+
+const dwl::TerrainCell& TerrainMapInterface::getTerrainData(const Eigen::Vector2d& position) const
+{
+	return terrain_map_->getTerrainData(position);
+}
+
+
+bool TerrainMapInterface::getTerrainCost(double& cost,
+										 const Eigen::Vector2d& position) const
+{
+	return terrain_map_->getTerrainCost(cost, position);
+}
+
+
+const double& TerrainMapInterface::getTerrainCost(const Eigen::Vector2d& position) const
+{
+	return terrain_map_->getTerrainCost(position);
+}
+
+
+bool TerrainMapInterface::getTerrainHeight(double& height,
+										   const Eigen::Vector2d& position) const
+{
+	return terrain_map_->getTerrainHeight(height, position);
+}
+
+
+double TerrainMapInterface::getTerrainHeight(const Eigen::Vector2d& position) const
+{
+	return terrain_map_->getTerrainHeight(position);
+}
+
+
+bool TerrainMapInterface::getTerrainNormal(Eigen::Vector3d& normal,
+										   const Eigen::Vector2d& position) const
+{
+	return terrain_map_->getTerrainNormal(normal, position);
+}
+
+
+const Eigen::Vector3d& TerrainMapInterface::getTerrainNormal(const Eigen::Vector2d& position) const
+{
+	return terrain_map_->getTerrainNormal(position);
 }
 
 
