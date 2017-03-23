@@ -14,7 +14,7 @@
 #include <vector>
 #include <geometry_msgs/PoseArray.h>
 #include <dwl_terrain/ObstacleMap.h>
-#include <dwl_terrain/RewardCell.h>
+#include <dwl_terrain/TerrainCell.h>
 #include <std_srvs/Empty.h>
 
 #include <tf/transform_datatypes.h>
