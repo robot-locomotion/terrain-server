@@ -1,9 +1,25 @@
 <launch>
 
 	<!-- Machine -->
-	<machine name="localhost" address="localhost" env-loader="/opt/ros/hydro/env.sh"/>
-	<arg name="machine" default="localhost" />
+	<machine name="terrainhost" address="localhost" env-loader="/opt/ros/hydro/env.sh"/>
+	<arg name="machine" default="terrainhost" />
+
+	<!-- Default values of parameters -->	
+	<arg name="octomap" default="true"/>
+	<arg name="resolution" default="0.02"/>
+	<arg name="max_range" default="1.5"/>
+	<arg name="cloud_in" default="/asus/depth_registered/points"/>
 	
+	<!-- launch octomap server -->
+	<group if="$(arg octomap)">
+		<include file="$(find dwl_terrain)/launch/octomap_server.launch">
+			<arg name="machine" value="$(arg machine)" />
+			<arg name="resolution" value="$(arg resolution)" />
+			<arg name="max_range" value="$(arg max_range)" />
+			<arg name="cloud_in" value="$(arg cloud_in)" />
+		</include>
+	</group>
+
 	<!-- load terrain map configurations from YAML file to parameter server -->
 	<rosparam file="$(find dwl_terrain)/config/terrain_map.yaml" command="load"/>
 	
