@@ -26,9 +26,9 @@ TerrainMapServer::TerrainMapServer(ros::NodeHandle node) : private_node_(node),
 	// Declaring the publisher of terrain map
 	map_pub_ = node_.advertise<dwl_terrain::TerrainMap>("terrain_map", 1);
 
-	reset_srv_ = node_.advertiseService("reset", &TerrainMapServer::reset, this);
+	reset_srv_ = private_node_.advertiseService("reset", &TerrainMapServer::reset, this);
 	terrain_data_srv_ = 
-			node_.advertiseService("terrain_data", &TerrainMapServer::getTerrainData, this);
+			private_node_.advertiseService("data", &TerrainMapServer::getTerrainData, this);
 }
 
 
