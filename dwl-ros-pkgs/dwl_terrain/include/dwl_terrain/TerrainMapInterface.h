@@ -10,6 +10,7 @@
 #include <dwl/utils/EnvironmentRepresentation.h>
 #include <dwl_terrain/TerrainMap.h>
 #include <dwl_terrain/TerrainData.h>
+#include <std_srvs/Empty.h>
 
 
 namespace dwl_terrain
@@ -32,6 +33,7 @@ class TerrainMapInterface
 		void init(ros::NodeHandle node);
 
 		void updateTerrainMap();
+		bool resetTerrainMap();
 
 		/**
 		 * @brief Gets the vector of terrain cells
@@ -79,8 +81,9 @@ class TerrainMapInterface
 		/** @brief Realtime buffer for the terrain map message */
 		realtime_tools::RealtimeBuffer<dwl_terrain::TerrainMap> map_buffer_;
 
-		/** @brief The terrain map client */
+		/** @brief The terrain map clients */
 		ros::ServiceClient terrain_clt_;
+		ros::ServiceClient reset_clt_;
 
 		/** @brief Terrain map message */
 		dwl_terrain::TerrainMap map_msg_;

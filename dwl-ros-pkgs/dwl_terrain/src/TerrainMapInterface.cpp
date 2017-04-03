@@ -9,7 +9,9 @@ TerrainMapInterface::TerrainMapInterface() : new_msg_(false),
 {
 	ros::NodeHandle node;
 	terrain_clt_ =
-			node.serviceClient<dwl_terrain::TerrainData>("/terrain_data");
+			node.serviceClient<dwl_terrain::TerrainData>("/terrain_map/data");
+	reset_clt_ =
+			node.serviceClient<std_srvs::Empty>("/terrain_map/reset");
 	terrain_map_.reset(new dwl::environment::TerrainMap());
 }
 
@@ -69,6 +71,18 @@ void TerrainMapInterface::updateTerrainMap()
 }
 
 
+bool TerrainMapInterface::resetTerrainMap()
+{
+	std_srvs::Empty srv;
+	if (!reset_clt_.call(srv)) {
+		ROS_ERROR("Failed to call service /terrain_map/reset");
+		return false;
+	}
+
+	return true;
+}
+
+
 bool TerrainMapInterface::getTerrainMap(dwl::TerrainData& map)
 {
 	if (is_terrain_data_) {
@@ -93,7 +107,7 @@ const dwl::TerrainCell& TerrainMapInterface::requestTerrainData(const Eigen::Vec
 								srv.response.normal.y,
 								srv.response.normal.z);
 	} else {
-		ROS_ERROR("Failed to call service terrain_data");
+		ROS_ERROR("Failed to call service terrain_map/data");
 		terrain_cell_.cost = 0.;
 		terrain_cell_.height = 0.;
 		terrain_cell_.normal = Eigen::Vector3d::UnitZ();
