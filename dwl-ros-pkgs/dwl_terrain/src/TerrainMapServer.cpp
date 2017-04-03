@@ -214,8 +214,8 @@ bool TerrainMapServer::reset(std_srvs::Empty::Request& req,
 
 	if (!client.call(req, resp)) {
 		ROS_ERROR("Failed to call service /octomap_server/reset");
-    	return false;
-  	}
+		return false;
+	}
 
 	ROS_INFO("Reset terrain map");	
 	return true;
