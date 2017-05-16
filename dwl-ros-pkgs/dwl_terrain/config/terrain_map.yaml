@@ -17,7 +17,7 @@ terrain_map:
     radius_x: 1.5
     radius_y: 5.5
   
-  # Defining the features for the reward map generation
+  # Defining the features for the costmap generation
   features:
     slope: {enable: false, weight: 300}
     height_deviation: {enable: true, weight: 600, neighboring_area: {square_size: 0.08, resolution: 0.02},
