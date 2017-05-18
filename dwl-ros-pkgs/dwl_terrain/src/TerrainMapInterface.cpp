@@ -85,6 +85,7 @@ bool TerrainMapInterface::resetTerrainMap()
 
 bool TerrainMapInterface::getTerrainMap(dwl::TerrainData& map)
 {
+	updateTerrainMap();
 	if (is_terrain_data_) {
 		map = terrain_data_;
 		return true;

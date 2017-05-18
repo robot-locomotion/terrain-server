@@ -28,7 +28,7 @@ class TerrainMapInterface
 		/**
 		 * @brief Creates a real-time subscriber of terrain map.
 		 * The name of the topic is defined as node_ns/terrain_map
-		 * @param ros::NodeHandle ROS node handle	 used by the subscription
+		 * @param ros::NodeHandle ROS node handle used by the subscription
 		 */
 		void init(ros::NodeHandle node);
 
