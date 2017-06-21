@@ -103,8 +103,8 @@ class TerrainMapServer
 		/** @brief World frame */
 		std::string world_frame_;
 
-		/** @brief Indicates if it was computed new information of the terrain map */
-		bool new_information_;
+		/** @brief Indicates if it was computed an initial terrain map */
+		bool initial_map_;
 };
 
 } //@namespace dwl_terrain

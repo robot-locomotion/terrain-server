@@ -197,20 +197,20 @@ void TerrainMapServer::octomapCallback(const octomap_msgs::Octomap::ConstPtr& ms
 	// Computing the terrain map
 	timespec start_rt, end_rt;
 	clock_gettime(CLOCK_REALTIME, &start_rt);
-	new_information_ = false;
 	terrain_map_.compute(octomap, robot_position);
+	initial_map_ = true;
+	publishTerrainMap();
 	clock_gettime(CLOCK_REALTIME, &end_rt);
 	double duration =
 			(end_rt.tv_sec - start_rt.tv_sec) + 1e-9*(end_rt.tv_nsec - start_rt.tv_nsec);
 	ROS_INFO("The duration of computation of terrain map is %f seg.", duration);
-
-	new_information_ = true;
 }
 
 
 bool TerrainMapServer::reset(std_srvs::Empty::Request& req,
 							std_srvs::Empty::Response& resp)
 {
+	initial_map_ = false;
 	terrain_map_.reset();
 
 	ros::ServiceClient client = 
@@ -229,7 +229,7 @@ bool TerrainMapServer::reset(std_srvs::Empty::Request& req,
 bool TerrainMapServer::getTerrainData(dwl_terrain::TerrainData::Request& req,
 									  dwl_terrain::TerrainData::Response& res)
 {
-	if (new_information_) {
+	if (initial_map_) {
 		Eigen::Vector2d position(req.position.x, req.position.y);
 		dwl::TerrainCell cell = terrain_map_.getTerrainData(position);
 
@@ -248,47 +248,45 @@ bool TerrainMapServer::getTerrainData(dwl_terrain::TerrainData::Request& req,
 
 void TerrainMapServer::publishTerrainMap()
 {
-	if (new_information_) {
-		// Publishing the terrain map if there is at least one subscriber
-		if (map_pub_.getNumSubscribers() > 0) {
-			map_msg_.header.stamp = ros::Time::now();
+	// Publishing the terrain map if there is at least one subscriber
+	if (map_pub_.getNumSubscribers() > 0) {
+		map_msg_.header.stamp = ros::Time::now();
 
-			dwl::TerrainDataMap terrain_gridmap = terrain_map_.getTerrainDataMap();
+		dwl::TerrainDataMap terrain_gridmap = terrain_map_.getTerrainDataMap();
 
-			// Getting the terrain map resolutions
-			map_msg_.plane_size = terrain_map_.getResolution(true);
-			map_msg_.height_size = terrain_map_.getResolution(false);
+		// Getting the terrain map resolutions
+		map_msg_.plane_size = terrain_map_.getResolution(true);
+		map_msg_.height_size = terrain_map_.getResolution(false);
 
-			// Getting the number of cells
-			unsigned int num_cells = terrain_gridmap.size();
-			map_msg_.cell.resize(num_cells);
+		// Getting the number of cells
+		unsigned int num_cells = terrain_gridmap.size();
+		map_msg_.cell.resize(num_cells);
 
-			// Converting the vertexes into a cell message
-			dwl_terrain::TerrainCell cell;
-			unsigned int idx = 0;
-			for (dwl::TerrainDataMap::iterator vertex_iter = terrain_gridmap.begin();
-					vertex_iter != terrain_gridmap.end();
-					vertex_iter++)
-			{
-				dwl::TerrainCell terrain_cell = vertex_iter->second;
+		// Converting the vertexes into a cell message
+		dwl_terrain::TerrainCell cell;
+		unsigned int idx = 0;
+		for (dwl::TerrainDataMap::iterator vertex_iter = terrain_gridmap.begin();
+				vertex_iter != terrain_gridmap.end();
+				vertex_iter++)
+		{
+			dwl::TerrainCell terrain_cell = vertex_iter->second;
 
-				cell.key_x = terrain_cell.key.x;
-				cell.key_y = terrain_cell.key.y;
-				cell.key_z = terrain_cell.key.z;
-				cell.cost = terrain_cell.cost;
-				cell.normal.x = terrain_cell.normal(dwl::rbd::X);
-				cell.normal.y = terrain_cell.normal(dwl::rbd::Y);
-				cell.normal.z = terrain_cell.normal(dwl::rbd::Z);
-				map_msg_.cell[idx] = cell;
+			cell.key_x = terrain_cell.key.x;
+			cell.key_y = terrain_cell.key.y;
+			cell.key_z = terrain_cell.key.z;
+			cell.cost = terrain_cell.cost;
+			cell.normal.x = terrain_cell.normal(dwl::rbd::X);
+			cell.normal.y = terrain_cell.normal(dwl::rbd::Y);
+			cell.normal.z = terrain_cell.normal(dwl::rbd::Z);
+			map_msg_.cell[idx] = cell;
 
-				idx++;
-			}
-
-			map_pub_.publish(map_msg_);
-
-			// Deleting old information
-			map_msg_.cell.clear();
+			idx++;
 		}
+
+		map_pub_.publish(map_msg_);
+
+		// Deleting old information
+		map_msg_.cell.clear();
 	}
 }
 
@@ -304,19 +302,7 @@ int main(int argc, char **argv)
 	if (!terrain_server.init())
 		return -1;
 
-	ros::spinOnce();
-
-	try {
-		ros::Rate loop_rate(100);
-		while(ros::ok()) {
-			terrain_server.publishTerrainMap();
-			ros::spinOnce();
-			loop_rate.sleep();
-		}
-	} catch(std::runtime_error& e) {
-		ROS_ERROR("terrain_map_server exception: %s", e.what());
-		return -1;
-	}
+	ros::spin();
 
 	return 0;
 }
