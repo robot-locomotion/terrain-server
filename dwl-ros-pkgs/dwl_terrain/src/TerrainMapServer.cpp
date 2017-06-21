@@ -6,29 +6,10 @@ namespace dwl_terrain
 
 TerrainMapServer::TerrainMapServer(ros::NodeHandle node) : private_node_(node),
 		terrain_discretization_(0.04, 0.04, M_PI / 200),
-		base_frame_("base_link"), world_frame_("world"), new_information_(false)
+		octomap_sub_(NULL),	tf_octomap_sub_(NULL), base_frame_("base_link"),
+		world_frame_("world"), initial_map_(false)
 {
-	// Getting the base and world frame
-	private_node_.param("base_frame", base_frame_, base_frame_);
-	private_node_.param("world_frame", world_frame_, world_frame_);
-	map_msg_.header.frame_id = world_frame_;
 
-	// Declaring the subscriber to octomap and tf messages
-	octomap_sub_ =
-			new message_filters::Subscriber<octomap_msgs::Octomap>(
-					node_, "octomap_binary", 5);
-	tf_octomap_sub_ =
-			new tf::MessageFilter<octomap_msgs::Octomap>(
-					*octomap_sub_, tf_listener_, world_frame_, 5);
-	tf_octomap_sub_->registerCallback(
-			boost::bind(&TerrainMapServer::octomapCallback, this, _1));
-
-	// Declaring the publisher of terrain map
-	map_pub_ = node_.advertise<dwl_terrain::TerrainMap>("terrain_map", 1);
-
-	reset_srv_ = private_node_.advertiseService("reset", &TerrainMapServer::reset, this);
-	terrain_data_srv_ = 
-			private_node_.advertiseService("data", &TerrainMapServer::getTerrainData, this);
 }
 
 
@@ -140,6 +121,29 @@ bool TerrainMapServer::init()
 		// Adding the feature
 		terrain_map_.addFeature(curvature_ptr);
 	}
+
+	// Getting the base and world frame
+	private_node_.param("base_frame", base_frame_, base_frame_);
+	private_node_.param("world_frame", world_frame_, world_frame_);
+	map_msg_.header.frame_id = world_frame_;
+
+	// Declaring the subscriber to octomap and tf messages
+	octomap_sub_ =
+			new message_filters::Subscriber<octomap_msgs::Octomap>(
+					node_, "octomap_binary", 5);
+	tf_octomap_sub_ =
+			new tf::MessageFilter<octomap_msgs::Octomap>(
+					*octomap_sub_, tf_listener_, world_frame_, 5);
+	tf_octomap_sub_->registerCallback(
+			boost::bind(&TerrainMapServer::octomapCallback, this, _1));
+
+	// Declaring the publisher of terrain map
+	map_pub_ = node_.advertise<dwl_terrain::TerrainMap>("terrain_map", 1);
+
+	reset_srv_ = private_node_.advertiseService("reset", &TerrainMapServer::reset, this);
+	terrain_data_srv_ =
+			private_node_.advertiseService("data", &TerrainMapServer::getTerrainData, this);
+
 
 	return true;
 }
