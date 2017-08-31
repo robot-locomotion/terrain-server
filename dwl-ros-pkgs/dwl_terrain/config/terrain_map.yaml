@@ -12,14 +12,14 @@ terrain_map:
 #  left_lateral: {min_x: -0.75, max_x: 5., min_y: -1.25, max_y: 0.85, min_z: -1.2, max_z: 0., resolution: 0.04}
 #  right_lateral: {min_x: -0.75, max_x: 5., min_y: 0.85, max_y: 1.25, min_z: -1.2, max_z: 0., resolution: 0.04}
   
-  # Defining the interest region for reward map generation
+  # Defining the interest region for costmap generation
   interest_region:
     radius_x: 1.5
     radius_y: 5.5
   
   # Defining the features for the costmap generation
   features:
-    slope: {enable: false, weight: 300}
-    height_deviation: {enable: true, weight: 1, neighboring_area: {square_size: 0.10, resolution: 0.01},
-     flat_height_deviation: 0.01, max_height_deviation: 0.15, min_allowed_height: -0.75}
-    curvature: {enable: false, weight: 100}
+    slope: {enable: false, weight: 1}
+    height_deviation: {enable: true, weight: 1, neighboring_area: {square_size: 0.08, resolution: 0.02},
+     flat_height_deviation: 0.01, max_height_deviation: 0.06, min_allowed_height: -0.10}
+    curvature: {enable: false, weight: 1}
