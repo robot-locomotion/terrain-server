@@ -37,7 +37,7 @@ catkin_package(
   INCLUDE_DIRS  include
   LIBRARIES  ${PROJECT_NAME}
   CATKIN_DEPENDS  roscpp octomap_msgs message_runtime
-  DEPENDS  system_lib eigen)
+  DEPENDS  eigen)
 
 # Setting flags for optimization
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11")
