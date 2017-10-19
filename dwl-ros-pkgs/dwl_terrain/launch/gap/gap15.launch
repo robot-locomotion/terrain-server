@@ -9,7 +9,7 @@
 		<remap from="topic_output" to="asus/depth_registered/points" />
 		<param name="position/x" type="double" value="0." />
 		<param name="position/y" type="double" value="0." />
-		<param name="position/z" type="double" value="0." />
+		<param name="position/z" type="double" value="-0.12" />
 		<param name="world_frame" type="string" value="world" />
 		<param name="rectangles" type="int" value="3" />
 		<param name="rectangle_1/center_x" type="double" value="0." />

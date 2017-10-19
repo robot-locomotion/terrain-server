@@ -20,6 +20,6 @@ terrain_map:
   # Defining the features for the costmap generation
   features:
     slope: {enable: false, weight: 1}
-    height_deviation: {enable: true, weight: 1, neighboring_area: {square_size: 0.08, resolution: 0.02},
+    height_deviation: {enable: true, weight: 1, neighboring_area: {square_size: 0.12, resolution: 0.02},
      flat_height_deviation: 0.01, max_height_deviation: 0.06, min_allowed_height: -0.10}
     curvature: {enable: false, weight: 1}

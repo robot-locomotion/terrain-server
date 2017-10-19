@@ -86,7 +86,7 @@
 			
 		<param name="rectangle_10/center_x" type="double" value="1.3" />
 		<param name="rectangle_10/center_y" type="double" value="0." />
-		<param name="rectangle_10/width" type="double" value="1.5" />
+		<param name="rectangle_10/width" type="double" value="2.5" />
 		<param name="rectangle_10/length" type="double" value="4.3" />
 		<param name="rectangle_10/yaw" type="double" value="0." />
 		<param name="rectangle_10/resolution" type="double" value="0.01" />

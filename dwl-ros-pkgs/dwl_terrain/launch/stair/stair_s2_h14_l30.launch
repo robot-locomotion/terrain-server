@@ -11,7 +11,7 @@
 		<param name="position/z" type="double" value="0." />
 		<param name="world_frame" type="string" value="world" />
 		<param name="rectangles" type="int" value="4" />
-		<param name="rectangle_1/center_x" type="double" value="1.15" />
+		<param name="rectangle_1/center_x" type="double" value="1.65" />
 		<param name="rectangle_1/center_y" type="double" value="0." />
 		<param name="rectangle_1/width" type="double" value="0.8" />
 		<param name="rectangle_1/length" type="double" value="1.2" />
@@ -19,7 +19,7 @@
 		<param name="rectangle_1/resolution" type="double" value="0.01" />
 		<param name="rectangle_1/height" type="double" value="0.14" />
 
-		<param name="rectangle_2/center_x" type="double" value="1.45" />
+		<param name="rectangle_2/center_x" type="double" value="2.02" />
 		<param name="rectangle_2/center_y" type="double" value="0." />
 		<param name="rectangle_2/width" type="double" value="0.8" />
 		<param name="rectangle_2/length" type="double" value="1.2" />
@@ -41,7 +41,7 @@
 		<param name="rectangle_4/length" type="double" value="2.4" />
 		<param name="rectangle_4/yaw" type="double" value="0." />
 		<param name="rectangle_4/resolution" type="double" value="0.01" />
-		<param name="rectangle_4/height" type="double" value="-0.2" />
+		<param name="rectangle_4/height" type="double" value="0." />
 	</node>
 
 </launch>
