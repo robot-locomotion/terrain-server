@@ -15,7 +15,6 @@ find_package(catkin  REQUIRED COMPONENTS
   tf_conversions
   pcl_ros)
 
-find_package(dwl  REQUIRED)
 find_package(octomap  REQUIRED)
 
 
@@ -36,11 +35,11 @@ generate_messages(DEPENDENCIES  std_msgs
 catkin_package(
   INCLUDE_DIRS  include
   LIBRARIES  ${PROJECT_NAME}
-  CATKIN_DEPENDS  roscpp octomap_msgs message_runtime)
+  CATKIN_DEPENDS  roscpp octomap_msgs message_runtime dwl)
 
 # Setting flags for optimization
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -march=native -mno-avx -mtune=native -D EIGEN_NO_DEBUG")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_BUILD_TYPE "Release")
 
 # Include directories
 include_directories(include  ${catkin_INCLUDE_DIRS}
@@ -61,7 +60,11 @@ add_dependencies(${PROJECT_NAME}  ${terrain_server_EXPORTED_TARGETS})
 
 
 ## Declare a cpp executable
-add_executable(terrain_map_server  src/TerrainMapServer.cpp)
+add_executable(terrain_map_server  src/TerrainMapServer.cpp
+								   src/TerrainMapping.cpp
+								   src/feature/SlopeFeature.cpp
+								   src/feature/HeightDeviationFeature.cpp
+								   src/feature/CurvatureFeature.cpp)
 add_dependencies(terrain_map_server  ${catkin_EXPORTED_TARGETS})
 target_link_libraries(terrain_map_server  ${catkin_LIBRARIES}
                                          ${dwl_LIBRARIES}

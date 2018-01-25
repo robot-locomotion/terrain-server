@@ -1,5 +1,5 @@
-#ifndef DWL_TERRAIN__DEFAULT_FLAT_TERRAIN___H
-#define DWL_TERRAIN__DEFAULT_FLAT_TERRAIN___H
+#ifndef TERRAIN_SERVER__DEFAULT_FLAT_TERRAIN___H
+#define TERRAIN_SERVER__DEFAULT_FLAT_TERRAIN___H
 
 #include <dwl/utils/RigidBodyDynamics.h>
 #include <dwl/utils/Orientation.h>
@@ -10,7 +10,7 @@
 #include <iostream>
 
 
-namespace dwl_terrain
+namespace terrain_server
 {
 
 struct Rectangle
@@ -69,6 +69,6 @@ class DefaultFlatTerrain
 		typedef pcl::PointCloud<pcl::PointXYZ> PointCloud;
 };
 
-} //@namespace dwl_terrain
+} //@namespace terrain_server
 
 #endif

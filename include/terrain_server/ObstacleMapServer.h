@@ -1,5 +1,5 @@
-#ifndef DWL_TERRAIN__OBSTACLE_MAP_SERVER___H
-#define DWL_TERRAIN__OBSTACLE_MAP_SERVER___H
+#ifndef TERRAIN_SERVER__OBSTACLE_MAP_SERVER___H
+#define TERRAIN_SERVER__OBSTACLE_MAP_SERVER___H
 
 #include <ros/ros.h>
 #include <octomap_msgs/Octomap.h>
@@ -13,8 +13,8 @@
 #include <Eigen/Dense>
 #include <vector>
 #include <geometry_msgs/PoseArray.h>
-#include <dwl_terrain/ObstacleMap.h>
-#include <dwl_terrain/TerrainCell.h>
+#include <terrain_server/ObstacleMap.h>
+#include <terrain_server/TerrainCell.h>
 #include <std_srvs/Empty.h>
 
 #include <tf/transform_datatypes.h>
@@ -23,7 +23,7 @@
 #include <message_filters/subscriber.h>
 
 
-namespace dwl_terrain
+namespace terrain_server
 {
 
 /**
@@ -75,7 +75,7 @@ class ObstacleMapServer
 		ros::ServiceServer reset_srv_;
 
 		/** @brief Obstacle map message */
-		dwl_terrain::ObstacleMap obstacle_map_msg_;
+		terrain_server::ObstacleMap obstacle_map_msg_;
 
 		/** @brief TF listener */
 		tf::TransformListener tf_listener_;
@@ -90,6 +90,6 @@ class ObstacleMapServer
 		bool new_information_;
 };
 
-} //@namespace dwl_terrain
+} //@namespace terrain_server
 
 #endif

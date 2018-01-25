@@ -1,7 +1,7 @@
-#include <dwl_terrain/DefaultFlatTerrain.h>
+#include <terrain_server/DefaultFlatTerrain.h>
 
 
-namespace dwl_terrain
+namespace terrain_server
 {
 
 DefaultFlatTerrain::DefaultFlatTerrain(ros::NodeHandle node) : node_(node),
@@ -84,7 +84,7 @@ void DefaultFlatTerrain::setFlatTerrain()
 	flat_terrain_pub_.publish(cloud);
 }
 
-} //@namespace dwl_terrain
+} //@namespace terrain_server
 
 
 
@@ -93,7 +93,7 @@ int main(int argc, char **argv)
 	ros::init(argc, argv, "default_flat_terrain");
 
 	ros::NodeHandle node("~");
-	dwl_terrain::DefaultFlatTerrain default_flat_terrain(node);
+	terrain_server::DefaultFlatTerrain default_flat_terrain(node);
 
 	ros::spinOnce();
 
@@ -105,7 +105,7 @@ int main(int argc, char **argv)
 			loop_rate.sleep();
 		}
 	} catch(std::runtime_error& e) {
-		ROS_ERROR("reward_map_server exception: %s", e.what());
+		ROS_ERROR("terrain_map_server exception: %s", e.what());
 		return -1;
 	}
 

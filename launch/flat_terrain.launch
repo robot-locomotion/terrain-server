@@ -4,7 +4,7 @@
 	<machine name="localhost" address="localhost" env-loader="/opt/ros/indigo/env.sh"/>
 	<arg name="machine" default="localhost" />
 
-	<node name="flat" pkg="dwl_terrain" type="default_flat_terrain" output="screen" machine="$(arg machine)">
+	<node name="flat" pkg="terrain_server" type="default_flat_terrain" output="screen" machine="$(arg machine)">
 		<remap from="topic_output" to="asus/depth_registered/points" />
 		<param name="position/x" type="double" value="0." />
 		<param name="position/y" type="double" value="0." />

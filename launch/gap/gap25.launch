@@ -5,7 +5,7 @@
 	<arg name="machine" default="localhost" />
 
 
-	<node name="gap" pkg="dwl_terrain" type="default_flat_terrain" output="screen" machine="$(arg machine)">
+	<node name="gap" pkg="terrain_server" type="default_flat_terrain" output="screen" machine="$(arg machine)">
 		<remap from="topic_output" to="asus/depth_registered/points" />
 		<param name="position/x" type="double" value="0." />
 		<param name="position/y" type="double" value="0." />

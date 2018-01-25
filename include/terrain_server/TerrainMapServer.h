@@ -1,21 +1,23 @@
-#ifndef DWL_TERRAIN__TERRAIN_MAP_SERVER___H
-#define DWL_TERRAIN__TERRAIN_MAP_SERVER___H
+#ifndef TERRAIN_SERVER__TERRAIN_MAP_SERVER___H
+#define TERRAIN_SERVER__TERRAIN_MAP_SERVER___H
 
 #include <ros/ros.h>
 
-#include <dwl/environment/TerrainMapping.h>
 #include <dwl/environment/SpaceDiscretization.h>
-#include <dwl/environment/SlopeFeature.h>
-#include <dwl/environment/HeightDeviationFeature.h>
-#include <dwl/environment/CurvatureFeature.h>
 #include <dwl/utils/Orientation.h>
+
+#include <terrain_server/TerrainMapping.h>
+#include <terrain_server/feature/SlopeFeature.h>
+#include <terrain_server/feature/HeightDeviationFeature.h>
+#include <terrain_server/feature/CurvatureFeature.h>
+
 
 #include <octomap_msgs/conversions.h>
 #include <octomap_msgs/Octomap.h>
-#include <dwl_terrain/TerrainMap.h>
-#include <dwl_terrain/TerrainCell.h>
+#include <terrain_server/TerrainMap.h>
+#include <terrain_server/TerrainCell.h>
 #include <std_srvs/Empty.h>
-#include <dwl_terrain/TerrainData.h>
+#include <terrain_server/TerrainData.h>
 
 #include <tf/transform_datatypes.h>
 #include <tf/transform_listener.h>
@@ -24,7 +26,7 @@
 
 
 
-namespace dwl_terrain
+namespace terrain_server
 {
 
 /**
@@ -54,8 +56,8 @@ class TerrainMapServer
 				   std_srvs::Empty::Response& resp);
 
 		/** @brief Gets the terrain data */
-		bool getTerrainData(dwl_terrain::TerrainData::Request& req,
-							dwl_terrain::TerrainData::Response& res);
+		bool getTerrainData(terrain_server::TerrainData::Request& req,
+							terrain_server::TerrainData::Response& res);
 
 		/** @brief Publishes a terrain map */
 		void publishTerrainMap();
@@ -69,7 +71,7 @@ class TerrainMapServer
 		ros::NodeHandle private_node_;
 
 		/** @brief Pointer to the terrain mapping class */
-		dwl::environment::TerrainMapping terrain_map_;
+		terrain_server::TerrainMapping terrain_map_;
 
 		/**
 		 *  @brief Object of the SpaceDiscretization class for defining the
@@ -92,7 +94,7 @@ class TerrainMapServer
 		ros::ServiceServer terrain_data_srv_;
 
 		/** @brief Terrain map message */
-		dwl_terrain::TerrainMap map_msg_;
+		terrain_server::TerrainMap map_msg_;
 
 		/** @brief TF listener */
 		tf::TransformListener tf_listener_;
@@ -107,5 +109,5 @@ class TerrainMapServer
 		bool initial_map_;
 };
 
-} //@namespace dwl_terrain
+} //@namespace terrain_server
 #endif

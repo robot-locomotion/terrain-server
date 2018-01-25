@@ -5,9 +5,9 @@
 	<arg name="machine" default="localhost" />
 	
 	<!-- load obstacle map configurations from YAML file to parameter server -->
-	<rosparam file="$(find dwl_terrain)/config/obstacle_map.yaml" command="load"/>
+	<rosparam file="$(find terrain_server)/config/obstacle_map.yaml" command="load"/>
 	
-	<node pkg="dwl_terrain" type="obstacle_map_server" name="terrain_obstacle_map" output="screen" machine="$(arg machine)">
+	<node pkg="terrain_server" type="obstacle_map_server" name="terrain_obstacle_map" output="screen" machine="$(arg machine)">
 		<remap from="obstacle_map" to="/obstacle_map" />
 		<param name="world_frame" type="string" value="world" />
 		<!-- Base frame of the robot -->

@@ -1,7 +1,7 @@
-#include <dwl_terrain/TerrainMapInterface.h>
+#include <terrain_server/TerrainMapInterface.h>
 
 
-namespace dwl_terrain
+namespace terrain_server
 {
 
 TerrainMapInterface::TerrainMapInterface() : new_msg_(false),
@@ -9,7 +9,7 @@ TerrainMapInterface::TerrainMapInterface() : new_msg_(false),
 {
 	ros::NodeHandle node;
 	terrain_clt_ =
-			node.serviceClient<dwl_terrain::TerrainData>("/terrain_map/data");
+			node.serviceClient<terrain_server::TerrainData>("/terrain_map/data");
 	reset_clt_ =
 			node.serviceClient<std_srvs::Empty>("/terrain_map/reset");
 	terrain_map_.reset(new dwl::environment::TerrainMap());
@@ -24,7 +24,7 @@ TerrainMapInterface::~TerrainMapInterface()
 
 void TerrainMapInterface::init(ros::NodeHandle node)
 {
-	sub_ = node.subscribe<dwl_terrain::TerrainMap> ("/terrain_map", 1,
+	sub_ = node.subscribe<terrain_server::TerrainMap> ("/terrain_map", 1,
 			&TerrainMapInterface::callback, this, ros::TransportHints().tcpNoDelay());
 }
 
@@ -96,7 +96,7 @@ bool TerrainMapInterface::getTerrainMap(dwl::TerrainData& map)
 
 const dwl::TerrainCell& TerrainMapInterface::requestTerrainData(const Eigen::Vector2d& position)
 {
-	dwl_terrain::TerrainData srv;
+	terrain_server::TerrainData srv;
 	srv.request.position.x = position(dwl::rbd::X);
 	srv.request.position.y = position(dwl::rbd::Y);
 
@@ -188,7 +188,7 @@ const Eigen::Vector3d& TerrainMapInterface::getTerrainNormal(const Eigen::Vector
 }
 
 
-void TerrainMapInterface::callback(const dwl_terrain::TerrainMapConstPtr& msg)
+void TerrainMapInterface::callback(const terrain_server::TerrainMapConstPtr& msg)
 {
 	// the writeFromNonRT can be used in RT, if you have the guarantee that
 	// no non-rt thread is calling the same function (we're not subscribing to ros callbacks)
@@ -198,4 +198,4 @@ void TerrainMapInterface::callback(const dwl_terrain::TerrainMapConstPtr& msg)
 	new_msg_ = true;
 }
 
-} //@namespace dwl_terrain
+} //@namespace terrain_server

@@ -1,7 +1,7 @@
-#include <dwl_terrain/TerrainMapServer.h>
+#include <terrain_server/TerrainMapServer.h>
 
 
-namespace dwl_terrain
+namespace terrain_server
 {
 
 TerrainMapServer::TerrainMapServer(ros::NodeHandle node) : private_node_(node),
@@ -74,7 +74,7 @@ bool TerrainMapServer::init()
 	if (enable_slope) {
 		// Setting the weight feature
 		private_node_.param("features/slope/weight", weight, default_weight);
-		dwl::environment::Feature* slope_ptr = new dwl::environment::SlopeFeature();
+		dwl::environment::Feature* slope_ptr = new terrain_server::feature::SlopeFeature();
 		slope_ptr->setWeight(weight);
 
 		// Adding the feature
@@ -94,9 +94,9 @@ bool TerrainMapServer::init()
 		private_node_.param("features/height_deviation/min_allowed_height",
 							 min_allowed_height, -std::numeric_limits<double>::max());
 		dwl::environment::Feature* height_dev_ptr =
-				new dwl::environment::HeightDeviationFeature(flat_height_deviation,
-															 max_height_deviation,
-															 min_allowed_height);
+				new terrain_server::feature::HeightDeviationFeature(flat_height_deviation,
+																	max_height_deviation,
+																	min_allowed_height);
 		height_dev_ptr->setWeight(weight);
 
 		// Setting the neighboring area
@@ -115,7 +115,7 @@ bool TerrainMapServer::init()
 	if (enable_curvature) {
 		// Setting the weight feature
 		private_node_.param("features/curvature/weight", weight, default_weight);
-		dwl::environment::Feature* curvature_ptr = new dwl::environment::CurvatureFeature();
+		dwl::environment::Feature* curvature_ptr = new terrain_server::feature::CurvatureFeature();
 		curvature_ptr->setWeight(weight);
 
 		// Adding the feature
@@ -138,7 +138,7 @@ bool TerrainMapServer::init()
 			boost::bind(&TerrainMapServer::octomapCallback, this, _1));
 
 	// Declaring the publisher of terrain map
-	map_pub_ = node_.advertise<dwl_terrain::TerrainMap>("terrain_map", 1);
+	map_pub_ = node_.advertise<terrain_server::TerrainMap>("terrain_map", 1);
 
 	reset_srv_ = private_node_.advertiseService("reset", &TerrainMapServer::reset, this);
 	terrain_data_srv_ =
@@ -226,8 +226,8 @@ bool TerrainMapServer::reset(std_srvs::Empty::Request& req,
 }
 
 
-bool TerrainMapServer::getTerrainData(dwl_terrain::TerrainData::Request& req,
-									  dwl_terrain::TerrainData::Response& res)
+bool TerrainMapServer::getTerrainData(terrain_server::TerrainData::Request& req,
+									  terrain_server::TerrainData::Response& res)
 {
 	if (initial_map_) {
 		Eigen::Vector2d position(req.position.x, req.position.y);
@@ -263,7 +263,7 @@ void TerrainMapServer::publishTerrainMap()
 		map_msg_.cell.resize(num_cells);
 
 		// Converting the vertexes into a cell message
-		dwl_terrain::TerrainCell cell;
+		terrain_server::TerrainCell cell;
 		unsigned int idx = 0;
 		for (dwl::TerrainDataMap::iterator vertex_iter = terrain_gridmap.begin();
 				vertex_iter != terrain_gridmap.end();
@@ -290,7 +290,7 @@ void TerrainMapServer::publishTerrainMap()
 	}
 }
 
-} //@namespace dwl_terrain
+} //@namespace terrain_server
 
 
 
@@ -298,7 +298,7 @@ int main(int argc, char **argv)
 {
 	ros::init(argc, argv, "terrain_map_server");
 
-	dwl_terrain::TerrainMapServer terrain_server;
+	terrain_server::TerrainMapServer terrain_server;
 	if (!terrain_server.init())
 		return -1;
 

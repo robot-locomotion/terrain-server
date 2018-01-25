@@ -1,7 +1,7 @@
-#include <dwl_terrain/ObstacleMapServer.h>
+#include <terrain_server/ObstacleMapServer.h>
 
 
-namespace dwl_terrain
+namespace terrain_server
 {
 
 ObstacleMapServer::ObstacleMapServer() : base_frame_("base_link"), world_frame_("world"), new_information_(false)
@@ -12,7 +12,7 @@ ObstacleMapServer::ObstacleMapServer() : base_frame_("base_link"), world_frame_(
 	tf_octomap_sub_->registerCallback(boost::bind(&ObstacleMapServer::octomapCallback, this, _1));
 
 	// Declaring the publisher of reward map
-	obstacle_pub_ = node_.advertise<dwl_terrain::ObstacleMap>("obstacle_map", 1);
+	obstacle_pub_ = node_.advertise<terrain_server::ObstacleMap>("obstacle_map", 1);
 
 	obstacle_map_msg_.header.frame_id = world_frame_;
 
@@ -143,7 +143,7 @@ void ObstacleMapServer::publishObstacleMap()
 			std::map<dwl::Vertex, dwl::Cell> obstacle_gridmap;
 			obstacle_gridmap = obstacle_map_.getObstacleMap();
 
-			dwl_terrain::Cell cell;
+			terrain_server::Cell cell;
 			obstacle_map_msg_.plane_size = obstacle_map_.getResolution(true);
 			obstacle_map_msg_.height_size = obstacle_map_.getResolution(false);
 
@@ -170,14 +170,14 @@ void ObstacleMapServer::publishObstacleMap()
 	}
 }
 
-} //@namespace dwl_terrain
+} //@namespace terrain_server
 
 
 int main(int argc, char **argv)
 {
 	ros::init(argc, argv, "obstacle_map_server");
 
-	dwl_terrain::ObstacleMapServer obstacle_server;
+	terrain_server::ObstacleMapServer obstacle_server;
 	if (!obstacle_server.init())
 			return -1;
 

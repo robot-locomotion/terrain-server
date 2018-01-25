@@ -1,5 +1,5 @@
-#ifndef DWL_TERRAIN__TERRAIN_MAP_INTERFACE__H
-#define DWL_TERRAIN__TERRAIN_MAP_INTERFACE__H
+#ifndef TERRAIN_SERVER__TERRAIN_MAP_INTERFACE__H
+#define TERRAIN_SERVER__TERRAIN_MAP_INTERFACE__H
 
 #include <ros/ros.h>
 #include <realtime_tools/realtime_buffer.h>
@@ -8,12 +8,12 @@
 #include <dwl/environment/SpaceDiscretization.h>
 #include <dwl/utils/RigidBodyDynamics.h>
 #include <dwl/utils/EnvironmentRepresentation.h>
-#include <dwl_terrain/TerrainMap.h>
-#include <dwl_terrain/TerrainData.h>
+#include <terrain_server/TerrainMap.h>
+#include <terrain_server/TerrainData.h>
 #include <std_srvs/Empty.h>
 
 
-namespace dwl_terrain
+namespace terrain_server
 {
 
 class TerrainMapInterface
@@ -71,22 +71,22 @@ class TerrainMapInterface
 	private:
 		/**
 		 * @brief Callback method when the terrain map message arrives
-		 * @param const dwl_terrain::TerrainMapConstPtr& Terrain map message
+		 * @param const terrain_server::TerrainMapConstPtr& Terrain map message
 		 */
-		void callback(const dwl_terrain::TerrainMapConstPtr& msg);
+		void callback(const terrain_server::TerrainMapConstPtr& msg);
 
 		/** @brief Terrain map subscriber */
 		ros::Subscriber sub_;
 
 		/** @brief Realtime buffer for the terrain map message */
-		realtime_tools::RealtimeBuffer<dwl_terrain::TerrainMap> map_buffer_;
+		realtime_tools::RealtimeBuffer<terrain_server::TerrainMap> map_buffer_;
 
 		/** @brief The terrain map clients */
 		ros::ServiceClient terrain_clt_;
 		ros::ServiceClient reset_clt_;
 
 		/** @brief Terrain map message */
-		dwl_terrain::TerrainMap map_msg_;
+		terrain_server::TerrainMap map_msg_;
 
 		/** @brief Terrain map (or cells) */
 		std::shared_ptr<dwl::environment::TerrainMap> terrain_map_;
@@ -100,7 +100,7 @@ class TerrainMapInterface
 		bool is_terrain_data_;
 };
 
-} //@namespace dwl_terrain
+} //@namespace terrain_server
 
 
 #endif
