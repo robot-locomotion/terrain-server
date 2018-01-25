@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(dwl_terrain)
+project(terrain_server)
 
 # Finding external libraries
 find_package(catkin  REQUIRED COMPONENTS
@@ -57,7 +57,7 @@ link_directories(${catkin_LIBRARY_DIRS}
 add_library(${PROJECT_NAME}  src/TerrainMapInterface.cpp)
 target_link_libraries(${PROJECT_NAME}  ${catkin_LIBRARIES}
                                        ${dwl_LIBRARIES})
-add_dependencies(${PROJECT_NAME}  ${dwl_terrain_EXPORTED_TARGETS})
+add_dependencies(${PROJECT_NAME}  ${terrain_server_EXPORTED_TARGETS})
 
 
 ## Declare a cpp executable
