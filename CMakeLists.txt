@@ -83,3 +83,23 @@ add_dependencies(default_flat_terrain  ${catkin_EXPORTED_TARGETS})
 target_link_libraries(default_flat_terrain  ${catkin_LIBRARIES}
                                             ${dwl_LIBRARIES}
                                             ${OCTOMAP_LIBRARIES})
+
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/config/
+            DESTINATION DESTINATION share/${PROJECT_NAME}/config
+            FILES_MATCHING PATTERN "*.yaml*")
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/launch/
+            DESTINATION DESTINATION share/${PROJECT_NAME}/launch
+            FILES_MATCHING PATTERN "*.*")
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/msg/
+            DESTINATION DESTINATION share/${PROJECT_NAME}/msg
+            FILES_MATCHING PATTERN "*.*")
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/srv/
+            DESTINATION DESTINATION share/${PROJECT_NAME}/srv
+            FILES_MATCHING PATTERN "*.*")
+install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION lib)
+
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/
+            DESTINATION DESTINATION include
+            FILES_MATCHING PATTERN "*.h*")
+install(TARGETS terrain_map_server obstacle_map_server default_flat_terrain RUNTIME DESTINATION lib/${PROJECT_NAME})
+install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION lib)
